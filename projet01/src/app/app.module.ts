@@ -9,8 +9,12 @@ import { LayoutModule } from '@angular/cdk/layout';
 import { MatToolbarModule, MatButtonModule, MatSidenavModule, MatIconModule, MatListModule, MatTableModule, MatPaginatorModule, MatSortModule, MatGridListModule, MatCardModule, MatMenuModule } from '@angular/material';
 import { NameComponent } from './name/name.component';
 import { MyDashboardComponent } from './my-dashboard/my-dashboard.component';
-import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule } from '@angular/forms';
+import { PizzaFormComponent } from './pizza/pizza-form/pizza-form.component';
+import { PizzaListComponent } from './pizza/pizza-list/pizza-list.component';
+import { PizzaModule } from './pizza/pizza.module';
+import { PizzaService } from './pizza/services/pizza.service';
 
 @NgModule({
   declarations: [
@@ -18,7 +22,8 @@ import { FormsModule } from '@angular/forms';
     HomeComponent,
     MyNavComponent,
     NameComponent,
-    MyDashboardComponent
+    MyDashboardComponent,
+    PizzaListComponent
   ],
   imports: [
     BrowserModule,
@@ -36,9 +41,10 @@ import { FormsModule } from '@angular/forms';
     MatCardModule,
     MatMenuModule,
     NgbModule,
-    FormsModule
+    FormsModule,
+    PizzaModule
   ],
-  providers: [],
+  providers: [PizzaService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -26,6 +26,13 @@ const mongoose = require('mongoose'),
         deleted: { type: Boolean, default: false }
     });
 
-const Ingredient = mongoose.model('Ingredient', ingredientSchema);
+const Ingredient = mongoose.model('Ingredients', ingredientSchema);
+
+// Tentative échouée
+ingredientSchema.pre("save", function (next) {
+    const currentDate = new Date;
+    this.updated_at = currentDate.now;
+    next();
+});
 
 module.exports = Ingredient;
