@@ -52,10 +52,10 @@ function getPizzas(req, res, next) {
         } else {
             res.status(200).send(pizza);
         }
-    }).sort({ created_at: 'desc' }).populate({
-        path: 'ingredients',
+    }).sort({ created_at: 'desc' })
+    /*.populate({
         match: { deleted: false }
-    }).exec(function (err, story) {
+    })*/.exec(function (err, story) {
         if (err) return console.log(err);
     });
 
@@ -107,6 +107,7 @@ function getPizzaById(req, res, next) {
 function postPizza(req, res, next) {
 
     console.log(req.body);
+    console.log('-----------------------------');
     const pizza = new Pizza(req.body);
 
     pizza.save((err, pizza) => {

@@ -1,18 +1,38 @@
-const MongoClient = require('mongodb').MongoClient;
-const assert = require('assert');
+const express = require('express');
+const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
 
-// Connection URL
-const url = 'mongodb://localhost:27017';
+const app = express();
+const config = require('./db');
+const pizzaController = require('./controllers/pizzaController');
+const ingredientController = require('./controllers/ingredientController');
 
-// Database Name
-const dbName = 'myproject';
+const PORT = 4000;
 
-// Use connect method to connect to the server
-MongoClient.connect(url, function (err, client) {
-  assert.equal(null, err);
-  console.log("Connected successfully to server");
-
-  const db = client.db(dbName);
-
-  client.close();
+mongoose.connect(config.DB).then(
+    () => {console.log('Database is connected') },
+    err => { console.log('Can not connect to the database' +err)
 });
+
+app.use(bodyParser.json());
+
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
+
+app.use('/ingredient', ingredientController);
+app.use('/pizza', pizzaController);
+
+
+app.listen(PORT, function(){
+    console.log('Your node js server is running on PORT:',PORT);
+});
+
+// pizza : {"img" : "", "name" : "dzadaz", "description" : "dzadaza", "lat" : "43.4814976", "long" : "5.4042623999999995","ingredients" : [""], "created_at" : ""}
+// ingredient : {"img" : "", "name" : "dzadaz", "description" : "dzadaza", "weight" : "43.48", "price" : "5.4","deleted" : true, "created_at" : ""}
+
+
+// db.createCollection('pizza', { autoIndexId: true })
+// db.createCollection('ingredient', { autoIndexId: true })
