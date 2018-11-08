@@ -1,3 +1,7 @@
-<p>
-  {{ ingredients? | async }}
-</p>
+
+  <div *ngFor="let ingredient of ingredients">
+    {{ ingredient.name }}
+    {{ ingredient.img }}
+    {{ ingredient.weight }}
+    {{ ingredient.price }}
+  </div>

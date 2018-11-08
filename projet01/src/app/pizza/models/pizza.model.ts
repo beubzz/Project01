@@ -7,7 +7,7 @@ export class Pizza {
     description: string;
     lat: string;
     long: string;
-    ingredient: Array<Ingredient>;
+    ingredients: Array<Ingredient>;
     createdAt: string;
     updatedAt: string;
 }

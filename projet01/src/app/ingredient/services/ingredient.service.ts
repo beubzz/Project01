@@ -3,6 +3,8 @@ import { HttpHeaders, HttpClient, HttpEvent } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { Observable } from 'rxjs';
 import { Ingredient } from '../models/ingredient';
+import { map } from 'rxjs/operators';
+
 
 @Injectable({
   providedIn: 'root'
@@ -18,9 +20,17 @@ export class IngredientService {
   private ingredientsUrl: string;
 
   constructor(private http: HttpClient) { 
-    this.ingredientsUrl = `${environment.apiUrl}`;
+    this.ingredientsUrl = `${environment.apiUrl}/ingredient`;
   }
 
+  public getSearchedIngredients(term){
+    return this.http.get<Array<Ingredient>>(`${this.ingredientsUrl}?q=${term}`);
+    /*.pipe(map(res => {
+        return res.map(item => {
+            return item.name
+        })
+    }));*/
+}
 
   public getIngredients(): Observable<Array<Ingredient>> {
     console.log(this.ingredientsUrl);
@@ -33,9 +43,8 @@ export class IngredientService {
   }
 
   // CHANGER LE TYPE ANY POUR TOUT LES HTTPOPTIONS !!!
-  public addIngredient(Ingredient: Ingredient, httpOptions: any = null): Observable<Ingredient> {
-    console.log('sa passe !');
-    return this.http.post<Ingredient>(this.ingredientsUrl, Ingredient, this.httpOptions);
+  public addIngredient(ingredient: Ingredient, httpOptions: any = null): Observable<Ingredient> {
+    return this.http.post<Ingredient>(this.ingredientsUrl, ingredient, this.httpOptions);
   }
 
   public deleteIngredient(Ingredient: Ingredient | string, httpOptions: any): Observable<HttpEvent<Ingredient>> {

@@ -15,6 +15,7 @@ export class IngredientListComponent implements OnInit {
   constructor(private ingredientService: IngredientService) { }
 
   ngOnInit() {
+    console.log('ici ????');
     this.loadData();
   }
 

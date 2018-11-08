@@ -6,7 +6,7 @@ export const environment = {
   production: false,
 
   // URL of local API
-  apiUrl: 'http://localhost:4000/pizza'
+  apiUrl: 'http://localhost:4000'
 };
 
 /*

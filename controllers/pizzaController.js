@@ -106,18 +106,17 @@ function getPizzaById(req, res, next) {
  */
 function postPizza(req, res, next) {
 
-    console.log(req.body);
-    console.log('-----------------------------');
     const pizza = new Pizza(req.body);
-
+    // console.log(pizza);
     pizza.save((err, pizza) => {
         if (err) {
+            // console.log(err);
             res.status(500).send(err);
         } else {
             res.status(200).send(pizza);
             // SOCKET
-            global.io.emit('[Pizza][post]', pizza);
-            global.io.emit('[Toast][new]', { type: 'success', title: `Nouvelle Pizza`, message: 'Une nouvelle pizza a été ajoutée !' });
+            // global.io.emit('[Pizza][post]', pizza);
+            // global.io.emit('[Toast][new]', { type: 'success', title: `Nouvelle Pizza`, message: 'Une nouvelle pizza a été ajoutée !' });
         }
 
     });

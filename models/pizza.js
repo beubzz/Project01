@@ -26,7 +26,7 @@ const mongoose = require('mongoose'),
         img: { type: String },
         long: { type: String },
         lat: { type: String },
-        ingredients: [{ type: Schema.Types.ObjectId, ref: 'Ingredient' }]
+        ingredients: [{ type: Schema.Types.Mixed, ref: 'Ingredient' }]
     });
 
 const Pizza = mongoose.model('Pizza', pizzaSchema);

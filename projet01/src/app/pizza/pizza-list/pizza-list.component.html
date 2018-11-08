@@ -1,10 +1,238 @@
-<div *ngFor="let pizza of pizzas">
-  nom : {{ pizza.name }} <br>
-  img : {{ pizza.img }} <br>
-  desc : {{ pizza.description }} <br>
-  lat : {{ pizza.lat }} <br>
-  long : {{ pizza.long }} <br>
-  ingredient : {{ pizza.ingredient }} <br>
-  created at : {{ pizza.createdAt }} <br>
-  updated at : {{ pizza.updatedAt }} <br>
-</div>
+<div class="actions-on-table text-right on-selection d-flex" *ngIf="checkedPizza && checkedPizza.length > 0">
+    <div class="text-white font-md p-2 d-inline-block mr-auto">
+      <span class="font-weight-bold">{{ checkedPizza?.length }}</span>
+      item(s) séléctionné(s)
+    </div>
+    <button class="btn btn-actions-on-table btn-primary" type="button"> <!-- (click)="bulkStatusToggleMessage()" [disabled]="!isDeactive"> -->
+      Activer
+    </button>
+    <button class="btn btn-actions-on-table btn-primary" type="button"> <!-- (click)="bulkStatusToggleMessage()" [disabled]="!isActive"> -->
+      Désactiver
+    </button>
+    <button class="btn btn-actions-on-table btn-primary" type="button"> <!-- (click)="open(deleteBulkModal, 'lg', null)"> -->
+      Supprimer
+    </button>
+  </div>
+  
+  <table class="table table-bordered table-striped table-hover table-full-width mb-3">
+    <thead>
+      <tr>
+        <th class="pl-3" width="30">
+          <div class="custom-control custom-checkbox">
+            <input #selectPizza class="custom-control-input" type="checkbox" (change)="checkAll()" [checked]="isChecked"
+              id="checkall">
+            <label class="custom-control-label" for="checkall">
+              <span class="sr-only">Tout cocher</span>
+            </label>
+          </div>
+        </th>
+        <th class="p-0">
+          <button class="sorting-btn btn btn-link btn-block text-color text-left font-weight-bold" (click)="setSortProperty(GetNamedProperty(pizzaFilter, 'name'))">
+            Nom
+            <span class="sorting-icons"> <!-- [ngClass]="getSortIcon(GetNamedProperty(pizzaFilter, 'name'))"> -->
+              <span class="datatable-icon-up"></span>
+              <span class="datatable-icon-down"></span>
+            </span>
+          </button>
+        </th>
+        <th class="p-0">
+          <button class="sorting-btn btn btn-link btn-block text-color text-left font-weight-bold" (click)="setSortProperty(GetNamedProperty(pizzaFilter, 'description'))">
+            description
+            <span class="sorting-icons"> <!--  [ngClass]="getSortIcon(GetNamedProperty(pizzaFilter, 'description'))"> -->
+              <span class="datatable-icon-up"></span>
+              <span class="datatable-icon-down"></span>
+            </span>
+          </button>
+        </th>
+        <th class="p-0">
+          <button class="sorting-btn btn btn-link btn-block text-color text-left font-weight-bold" (click)="setSortProperty(GetNamedProperty(pizzaFilter, 'img'))">
+            img
+            <span class="sorting-icons"> <!--  [ngClass]="getSortIcon(GetNamedProperty(pizzaFilter, 'img'))"> -->
+              <span class="datatable-icon-up"></span>
+              <span class="datatable-icon-down"></span>
+            </span>
+          </button>
+        </th>
+        <th class="p-0">
+          <button class="sorting-btn btn btn-link btn-block text-color text-left font-weight-bold" (click)="setSortProperty(GetNamedProperty(pizzaFilter, 'ingredients'))">
+            ingredients
+            <span class="sorting-icons"> <!--  [ngClass]="getSortIcon(GetNamedProperty(pizzaFilter, 'ingredients'))"> -->
+              <span class="datatable-icon-up"></span>
+              <span class="datatable-icon-down"></span>
+            </span>
+          </button>
+        </th>
+        <th width="50">
+          Actions
+        </th>
+      </tr>
+      <tr class="table-filter">
+        <th class="pl-3">
+          <!-- <div class="custom-control custom-checkbox">
+            <input #selectpizza class="custom-control-input"
+              type="checkbox" (change)="checkAll()" [checked]="isChecked" id="checkall">
+            <label class="custom-control-label" for="checkall">
+              <span class="sr-only">Tout cocher</span>
+            </label>
+          </div> -->
+        </th>
+        <th class="p-0">
+          <!--
+          <div class="input-group">
+            <input #filterName (keyup)="setFilterProperty(pizzaFilter, 'name', filterName.value)"
+              type="text" name="filterName" id="filterName" class="form-control" placeholder="Filtrer sur..." [ngClass]="pizzaFilter.name ? 'filtering' : '' ">
+            <div class="input-group-append">
+              <button class="btn btn-secondary border-0" type="button" id="button-addon2" (click)="setFilterProperty(pizzaFilter, 'name', '');">x</button>
+            </div>
+          </div>
+          -->
+        </th>
+        <th class="p-0"></th>
+        <th class="p-0"></th>
+        <th class="p-0"></th>
+        <th class="p-0"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-container *ngFor="let pizza of pizzas">
+        <tr [attr.data-id]="pizza.id"> <!--  [ngClass]="getStatutClass(pizza)"> -->
+          <td class="pl-3">
+            <div class="custom-control custom-checkbox">
+  
+              <input #selectpizza class="custom-control-input" [id]="pizza._id" [value]="pizza._id"
+                type="checkbox" (change)="onCheckboxChange(selectpizza, pizza)" [checked]="tryToCheck(pizza)">
+              <label class="custom-control-label" [for]="pizza.id">
+                <span class="sr-only">Cocher la ligne</span>
+              </label>
+  
+            </div>
+          </td>
+          <td data-title="name" (click)="open(messageModal, 'lg', pizza)" class="text-primary text-hover-underline pointer">{{pizza.name}}</td>
+          
+          <td data-title="description" (click)="open(messageModal, 'lg', pizza)" class="text-primary text-hover-underline pointer">{{pizza.description}}</td>
+          <td data-title="img" (click)="open(messageModal, 'lg', pizza)" class="text-primary text-hover-underline pointer">{{pizza.img}}</td>
+          <td data-title="ingredients" (click)="open(messageModal, 'lg', pizza)" class="text-primary text-hover-underline pointer">
+            <ul *ngIf="pizza.ingredients.length >= 1">
+
+              {{ingredients | json }}
+              <li *ngFor="let ingredient of pizza.ingredients">
+                {{ ingredient.name }}
+              </li>
+              <!-- {{ingredient | async }}?.name -->
+            </ul>
+          </td>
+          <!-- <td>
+            <span *ngIf="pizza.channel === messageChannel.Perturbation">Perturbation</span>
+            <span *ngIf="pizza.channel === messageChannel.Commercial">Commercial</span>
+            <span *ngIf="pizza.channel === messageChannel.Information">Information</span>
+          </td> -->
+          <!-- <td>
+            <span *ngIf="pizza.publicationStatus === messagePublication.Expired">Expiré</span>
+            <span *ngIf="pizza.publicationStatus === messagePublication.Pending">A venir</span>
+            <span *ngIf="pizza.publicationStatus === messagePublication.Running">En cours</span>
+          </td>-->
+          <!-- <td>
+            <span *ngIf="pizza.status === messageStatus.Active">Activé</span>
+            <span *ngIf="pizza.status === messageStatus.Cancelled">Désactivé</span>
+          </td> -->
+          <td class="p-0">
+            <div ngbDropdown class="text-center" placement="bottom-right">
+              <button class="btn btn-link btn-icon-icon dropdown-nocaret" id="actions" ngbDropdownToggle>
+                <span class="btn-icon-img optyweb cw-nav-small-menu" title="Menu d'actions" aria-hidden="true"></span>
+                <span class="sr-only">Menu d'actions</span>
+              </button>
+              <ul ngbDropdownMenu aria-labelledby="actions" class="p-0">
+                <li class="dropdown-item p-0">
+                  <button type="button" class="btn btn-link btn-block text-left text-color px-2 py-1" [routerLink]="['/simulation/messages/edit', pizza.id]"
+                    >Modifier</button>
+                </li>
+                <li class="dropdown-item p-0" *ngIf="pizza.status === 'Cancelled'">
+                  <button type="button" class="btn btn-link btn-block text-left text-color px-2 py-1" (click)="activate(pizza)">Activer</button>
+                </li>
+                <li class="dropdown-item p-0" *ngIf="pizza.status === 'Active'">
+                  <button type="button" class="btn btn-link btn-block text-left text-color px-2 py-1" (click)="deactivate(pizza)">Désactiver</button>
+                </li>
+                <li class="dropdown-item p-0">
+                  <button type="button" class="btn btn-link btn-block text-left text-danger px-2 py-1" (click)="open(deleteModal, 'lg', pizza)">Supprimer</button>
+                </li>
+              </ul>
+            </div>
+          </td>
+        </tr>
+      </ng-container>
+      <!--
+        <ng-container *ngIf="paginedResult && paginedResult.result?.length <= 0">
+        <tr>
+          <td class="p-0" colspan="16">
+            <div class="alert alert-info m-0">Aucun résultat</div>
+          </td>
+        </tr>
+      </ng-container>
+      -->
+    </tbody>
+  </table>
+
+  <!-- 
+  <app-xpagination *ngIf="paginedResult && paginedResult?.pagination.PageCount >= 0" [pagination]="paginedResult?.pagination"
+    [pagesToShow]="pageToShow" (goPage)="goToPage($event)" (goNext)="onNext()" (goPrev)="onPrev()" (nbResultChange)="onNbResultChange($event)">
+  </app-xpagination>
+  -->
+
+  <!-- 
+  <ng-template #messageModal let-c="close" let-d="dismiss">
+    <div class="modal-header">
+      <h1 class="modal-title">{{modalMessage.name}}</h1>
+      <button type="button" class="close" aria-label="Fermer" (click)="close()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <app-message-details [messageId]="modalMessage.id"></app-message-details>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-primary" type="button" [routerLink]="['/simulation/messages/edit', modalMessage.id]" (click)="modalRef.dismiss()"
+        [disabled]="modalMessage.status === messageStatus.Active || modalMessage.scope !== messageScope.in" [title]="modalMessage.status === messageStatus.Active ? 'Le signal ne peut être modifié que s\'il est au préalable désactivé et s\'il est intégralement dans l\'import en cours.' : 'Modifier'">
+        Modifier
+      </button>
+      <button class="btn btn-secondary" (click)="close()">
+        Fermer
+      </button>
+    </div>
+  </ng-template>
+  
+  <ng-template #deleteModal let-c="close" let-d="dismiss">
+    <div class="modal-header">
+      <h1 class="modal-title">{{modalMessage.name}}</h1>
+      <button type="button" class="close" aria-label="Fermer" (click)="close()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div>Êtes vous certain de vouloir supprimer ce message ?</div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-danger" (click)="delete(modalMessage.id)">Supprimer</button>
+      <button type="button" class="btn btn-secondary" (click)="close()">Annuler</button>
+    </div>
+  </ng-template>
+  
+  <ng-template #deleteBulkModal let-c="close" let-d="dismiss">
+    <div class="modal-header">
+      <h1 class="modal-title">Suppression de plusieurs messages</h1>
+      <button type="button" class="close" aria-label="Fermer" (click)="close()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div>Êttes vous certain de vouloir supprimer ces messages ?</div>
+      <ul class="m-0" *ngIf="selectedPizza.length > 0">
+        <li *ngFor="let msg of selectedPizza">{{msg.name}}</li>
+      </ul>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-danger" (click)="bulkMessageDelete()">Supprimer</button>
+      <button type="button" class="btn btn-secondary" (click)="close()">Annuler</button>
+    </div>
+  </ng-template>
+  
+  -->

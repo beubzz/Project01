@@ -19,9 +19,8 @@ export class PizzaService {
   private pizzasUrl: string;
 
   constructor(private http: HttpClient) { 
-    this.pizzasUrl = `${environment.apiUrl}`;
+    this.pizzasUrl = `${environment.apiUrl}/pizza`;
   }
-
 
   public getPizzas(): Observable<Array<Pizza>> {
     console.log(this.pizzasUrl);
@@ -35,7 +34,6 @@ export class PizzaService {
 
   // CHANGER LE TYPE ANY POUR TOUT LES HTTPOPTIONS !!!
   public addPizza(pizza: Pizza, httpOptions: any = null): Observable<Pizza> {
-    console.log('sa passe !');
     return this.http.post<Pizza>(this.pizzasUrl, pizza, this.httpOptions);
   }
 

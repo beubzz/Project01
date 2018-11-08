@@ -11,9 +11,11 @@ const Ingredient = require('../models/ingredient');
 //                                ROUTES                                      //
 // ************************************************************************** //
 router.get('/', (req, res, next) => {
-    console.log(' sa passe par la ou pas ?');
-    console.log(req.originalUrl);
-    getIngredients(req, res, next);
+    if (req.query) {
+        getSearchedIngredients(req, res, next);
+    } else {
+        getIngredients(req, res, next);
+    }
 });
 
 router.get('/:id', (req, res, next) => {
@@ -46,7 +48,6 @@ router.delete('/:id', (req, res, next) => {
  * @returns {Promise.<void>} Call res.status() with a status code to say what happens and res.json() to send data if there is any.
  */
 function getIngredients(req, res, next){
-
     Ingredient.find({}, (err, ingredients) => {
         if (err) {
             console.log(err);
@@ -61,6 +62,35 @@ function getIngredients(req, res, next){
     });
     
 }
+
+/**
+ * Find all ingredients
+ *
+ * @function getIngredients
+ * @memberof IngredientController
+ * @param {Object} req - Request object.
+ * @param {Object} res - Response object.
+ * @returns {Promise.<void>} Call res.status() with a status code to say what happens and res.json() to send data if there is any.
+ */
+function getSearchedIngredients(req, res, next){
+
+    const queryName = req.query.q;
+
+    Ingredient.find({"name" : new RegExp(queryName, 'i')}, (err, ingredients) => {
+        // console.log(queryName);
+        if (err) {
+            console.log(err);
+            res.status(500).send(err);
+        } else {
+            res.status(200).send(ingredients);
+        }
+    })
+    .exec(function (err, story) {
+        if (err) return console.log(err);
+    });
+    
+}
+
 /**
  * Find ingredient by ID
  *
@@ -101,8 +131,10 @@ function getIngredientById(req, res, next){
 function postIngredient(req, res, next){
     
     const ingredient = new Ingredient(req.body);
+    // console.log(ingredient);
     ingredient.save((err, ingredient) => {
         if (err) {
+            // console.log(err);
             res.status(500).send(err);
         }
         res.status(200).send(ingredient);

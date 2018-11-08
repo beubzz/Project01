@@ -1,0 +1,26 @@
+<button type="button" class="btn btn-outline-success" (click)="open(loaderModal, 'lg')">
+  Add
+</button>
+
+<ng-template #loaderModal>
+  <!-- 
+    <div class="animated-loader-container animated-loader-medium animated-loader-container-top">
+    <div aria-live="assertive" class="animated-loader black"></div>
+    <div class="animated-loader-text">Chargement : Upload du fichier {{ importForm.value.fileName }} en cours</div>
+    </div>
+    <div class="modal-footer">
+    <button class="btn btn-danger" (click)="closeAndUnsubscribe()">
+    Annuler
+    </button>
+    </div>
+    -->
+    <div class="modal-header">
+      Ajouter un ingredient :
+    </div>
+    <div class="container">
+      <app-ingredient-form></app-ingredient-form>
+    </div>
+    <div class="modal-footer">
+      footer blabla
+    </div>
+   </ng-template>

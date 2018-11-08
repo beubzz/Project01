@@ -6,15 +6,16 @@ import { HomeComponent } from './home/home.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MyNavComponent } from './my-nav/my-nav.component';
 import { LayoutModule } from '@angular/cdk/layout';
-import { MatToolbarModule, MatButtonModule, MatSidenavModule, MatIconModule, MatListModule, MatTableModule, MatPaginatorModule, MatSortModule, MatGridListModule, MatCardModule, MatMenuModule } from '@angular/material';
+import { MatToolbarModule, MatButtonModule, MatSidenavModule, MatIconModule, MatListModule, MatTableModule, MatPaginatorModule, MatSortModule, MatGridListModule, MatCardModule, MatMenuModule, MatInputModule, MatAutocompleteModule } from '@angular/material';
 import { NameComponent } from './name/name.component';
 import { MyDashboardComponent } from './my-dashboard/my-dashboard.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { FormsModule } from '@angular/forms';
-import { PizzaFormComponent } from './pizza/pizza-form/pizza-form.component';
-import { PizzaListComponent } from './pizza/pizza-list/pizza-list.component';
-import { PizzaModule } from './pizza/pizza.module';
-import { PizzaService } from './pizza/services/pizza.service';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NgSelectModule } from '@ng-select/ng-select';
+import { RouterModule } from '@angular/router';
+import { AppRoutingModule } from './app-routing.module';
+import { ToastrModule } from 'ngx-toastr';
+import { CommonModule } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -23,11 +24,15 @@ import { PizzaService } from './pizza/services/pizza.service';
     MyNavComponent,
     NameComponent,
     MyDashboardComponent,
-    PizzaListComponent
   ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
+    ToastrModule.forRoot({
+      timeOut: 2000,
+      positionClass: 'toast-bottom-right',
+      preventDuplicates: true,
+    }),
     LayoutModule,
     MatToolbarModule,
     MatButtonModule,
@@ -42,9 +47,17 @@ import { PizzaService } from './pizza/services/pizza.service';
     MatMenuModule,
     NgbModule,
     FormsModule,
-    PizzaModule
+    AppRoutingModule,
+    NgSelectModule,
+    FormsModule,
+    MatInputModule,
+    ReactiveFormsModule,
+    MatAutocompleteModule, 
   ],
-  providers: [PizzaService],
-  bootstrap: [AppComponent]
+  providers: [],
+  bootstrap: [AppComponent],
+  exports: [
+    RouterModule
+  ]
 })
 export class AppModule { }
