@@ -97,7 +97,7 @@ export class PizzaFormComponent implements OnInit {
         this.pizza.lat = this.pizzaForm.value.lat;
         this.pizza.long = this.pizzaForm.value.long;
         
-        console.log(this.pizzaForm.value.ingredients);
+        // console.log(this.pizzaForm.value.ingredients);
 
         // met en place uniquement les object id ...
         this.pizza.ingredients = this.pizzaForm.value.ingredients;
@@ -106,7 +106,7 @@ export class PizzaFormComponent implements OnInit {
         // console.log(this.ingredientArray);
         // this.pizza.ingredients = this.ingredientArray ? this.ingredientArray : [];
         this.pizza.createdAt = '';
-        console.log('ici', this.pizza);
+        // console.log('ici', this.pizza);
 
         this.pizzaService.addPizza(this.pizza)
         .subscribe(

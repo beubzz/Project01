@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { Ingredient } from '../models/ingredient';
 import { IngredientService } from '../services/ingredient.service';
 import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
+import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-ingredient-form',
@@ -12,6 +13,9 @@ import { Router } from '@angular/router';
   styleUrls: ['./ingredient-form.component.css']
 })
 export class IngredientFormComponent implements OnInit {
+
+  @Input() isFromModal: boolean;
+  @Input() modalRef: NgbModalRef;
 
   public ingredientForm: FormGroup;
   public submitted: boolean = false;
@@ -62,9 +66,13 @@ export class IngredientFormComponent implements OnInit {
         this.ingredientService.addIngredient(this.ingredient)
         .subscribe(
           data  => { 
-            console.log(data);
+            // console.log(data);
             this.toastr.success('Ingrédient ajouté !', 'Congrat');
-            this.router.navigate(['ingredient']);
+            if (this.isFromModal) {
+              this.modalRef.close();
+            } else {
+              this.router.navigate(['ingredient']);
+            }
           },
           error => Observable.throw(error)  
         );

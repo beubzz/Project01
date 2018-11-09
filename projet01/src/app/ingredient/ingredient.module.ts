@@ -25,6 +25,10 @@ import { ToastrModule } from 'ngx-toastr';
   ],
   providers: [
     IngredientService
+  ],
+  exports: [
+    IngredientFormComponent,
+    IngredientListComponent
   ]
 })
 export class IngredientModule { }

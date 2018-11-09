@@ -143,7 +143,7 @@
               </button>
               <ul ngbDropdownMenu aria-labelledby="actions" class="p-0">
                 <li class="dropdown-item p-0">
-                  <button type="button" class="btn btn-link btn-block text-left text-color px-2 py-1" [routerLink]="['/simulation/messages/edit', pizza.id]"
+                  <button type="button" class="btn btn-link btn-block text-left text-color px-2 py-1" [routerLink]="['/pizza/edit', pizza._id]"
                     >Modifier</button>
                 </li>
                 <li class="dropdown-item p-0" *ngIf="pizza.status === 'Cancelled'">

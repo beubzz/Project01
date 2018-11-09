@@ -26,13 +26,13 @@ import { IngredientFormComponent } from '../ingredient/ingredient-form/ingredien
     MatInputModule,
     ReactiveFormsModule,
     MatAutocompleteModule,
-    // IngredientModule,
+    IngredientModule,
   ],
   declarations: [
     PizzaFormComponent,
     PizzaListComponent,
     AddIngredientModalComponent,
-    IngredientFormComponent
+    // IngredientFormComponent
   ],
   providers: [
     PizzaService,
