@@ -27,6 +27,7 @@ export class PizzaFormComponent implements OnInit {
   public term: string;
   public isLoading: boolean;
   public ingredientArray: Array<Ingredient>;
+  public editMode: boolean;
   
   constructor(
     private formBuilder: FormBuilder,
@@ -39,6 +40,7 @@ export class PizzaFormComponent implements OnInit {
     this.pizza = new Pizza();
     this.ingredientsInput$ = new Subject<string>();
     this.ingredientArray = new Array();
+    this.editMode = false;
   }
 
   ngOnInit() {
@@ -52,6 +54,10 @@ export class PizzaFormComponent implements OnInit {
     });
 
     this.term = '';
+
+    if (this.router.url.includes("edit")) {
+      this.editMode = true;
+    }
 
     this.ingredients$ = concat(
       of(new Array<Ingredient>()),
@@ -74,6 +80,21 @@ export class PizzaFormComponent implements OnInit {
       )
     );
 
+    if (this.editMode) {
+      const _id = this.router.url.split('/')[3];
+      // console.log(_id);
+
+      this.pizzaService.getPizza(_id).subscribe(res => {
+        this.pizza = res;
+        this.pizzaForm.controls.name.setValue(this.pizza.name);
+        this.pizzaForm.controls.img.setValue(this.pizza.img);
+        this.pizzaForm.controls.description.setValue(this.pizza.description);
+        this.pizzaForm.controls.lat.setValue(this.pizza.lat);
+        this.pizzaForm.controls.long.setValue(this.pizza.long);
+        this.pizzaForm.controls.ingredients.setValue(this.pizza.ingredients);
+      })
+    }
+
   }
 
   // convenience getter for easy access to form fields
@@ -83,7 +104,6 @@ export class PizzaFormComponent implements OnInit {
 
   onSubmit() {
       this.submitted = true;
-
       // console.log(this.pizzaForm);
 
       // stop here if form is invalid
@@ -99,7 +119,6 @@ export class PizzaFormComponent implements OnInit {
         
         // console.log(this.pizzaForm.value.ingredients);
 
-        // met en place uniquement les object id ...
         this.pizza.ingredients = this.pizzaForm.value.ingredients;
 
         // console.log(this.pizzaForm.value.ingredients);
@@ -111,7 +130,7 @@ export class PizzaFormComponent implements OnInit {
         this.pizzaService.addPizza(this.pizza)
         .subscribe(
           data  => { 
-            console.log(data);
+            // console.log(data);
             this.toastr.success('Pizza ajouté !', 'Congrat');
             this.router.navigate(['pizza']);
           },

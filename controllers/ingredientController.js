@@ -26,8 +26,13 @@ router.post('/', (req, res, next) => {
     postIngredient(req, res, next);
 });
 
+router.post('/:id', (req, res, next) => {
+    updateIngredient(req, res, next);
+});
+
+// plus utilisé ! function put un peu obsoléte !
 router.put('/:id', (req, res, next) => {
-  putIngredient(req, res, next);
+  updateIngredient(req, res, next);
 });
 
 router.delete('/:id', (req, res, next) => {
@@ -102,7 +107,7 @@ function getSearchedIngredients(req, res, next){
  */
 function getIngredientById(req, res, next){
     
-     Ingredient.findById(req.params.id, (err, ingredient) => {
+    Ingredient.findById(req.params.id, (err, ingredient) => {
         if (err) {
             res.status(500).send(err)
         } else if (ingredient === null) {
@@ -138,6 +143,38 @@ function postIngredient(req, res, next){
             res.status(500).send(err);
         }
         res.status(200).send(ingredient);
+    });
+}
+
+/**
+ * Update Ingredient in POST not PUT
+ *
+ * @function updateIngredient
+ * @memberof IngredientController
+ * @param {Object} req - Request object.
+ * @param {string} req.params._id - Ingredient's ID to find.
+ * @param {string} req.query.name - Ingredient's name to query.
+ * @param {string} req.query.description - Ingredient's description to query.
+ * @param {string} req.query.img - Ingredient's image to query.
+ * @param {string} req.query.weight - Ingredient's weight to query.
+ * @param {string} req.query.price - Ingredient's price to query.
+ * @param {string} req.query.deleted - Ingredient's deleted to query.
+ * @param {Object} res - Response object.
+ * @returns {Promise.<void>} Call res.status() with a status code to say what happens and res.json() to send data if there is any.
+ */
+function updateIngredient(req, res, next){
+    
+    let ingredient = new Ingredient(req.body);
+    ingredient.updated_at = new Date;
+
+    Ingredient.findOneAndUpdate({_id: req.params.id}, ingredient, { new: true }, (err, ingredient) => {
+        if (err) {
+            res.status(500).send(err);
+        } else if (ingredient === null) {
+            res.status(404).send('Aucun ingredient trouvé avec cet Identifiant...');
+        } else {
+            res.status(200).send(ingredient);
+        }
     });
 }
 

@@ -18,9 +18,10 @@ export class IngredientFormComponent implements OnInit {
   @Input() modalRef: NgbModalRef;
 
   public ingredientForm: FormGroup;
-  public submitted: boolean = false;
-
+  public submitted: boolean;
+  
   public ingredient: Ingredient;
+  public editMode: boolean;
   
   constructor(
     private formBuilder: FormBuilder,
@@ -30,6 +31,7 @@ export class IngredientFormComponent implements OnInit {
   ) {
     this.submitted = false;
     this.ingredient = new Ingredient();
+    this.editMode = false;
   }
 
   ngOnInit() {
@@ -40,6 +42,24 @@ export class IngredientFormComponent implements OnInit {
       weight: ['', [Validators.pattern("^[0-9]*$") , Validators.required]],
       price: ['', [Validators.pattern("^[0-9]*$") , Validators.required]]
     });
+
+    this.editMode = this.router.url.includes('edit');
+
+    if (this.editMode) {
+      const _id = this.router.url.split('/')[3];
+      // console.log(_id);
+      
+      this.ingredientService.getIngredient(_id).subscribe(res => {
+        this.ingredient = res;
+        const weight = this.ingredient.weight.replace(',', '.');
+        const price = this.ingredient.price.replace(',', '.');
+        this.ingredientForm.controls.name.setValue(this.ingredient.name);
+        this.ingredientForm.controls.img.setValue(this.ingredient.img);
+        this.ingredientForm.controls.description.setValue(this.ingredient.description);
+        this.ingredientForm.controls.weight.setValue(weight);
+        this.ingredientForm.controls.price.setValue(price);
+      })
+    }
   }
 
   // convenience getter for easy access to form fields
@@ -55,6 +75,8 @@ export class IngredientFormComponent implements OnInit {
         this.toastr.error('Le formulaire n\' a pas été rempli correctement', 'error');
         return;
       } else {
+        console.log(this.ingredient);
+        console.log(this.ingredientForm);
         this.ingredient.name = this.ingredientForm.value.name;
         this.ingredient.img = this.ingredientForm.value.img;
         this.ingredient.description = this.ingredientForm.value.description;
@@ -63,19 +85,33 @@ export class IngredientFormComponent implements OnInit {
         this.ingredient.deleted = false;
         this.ingredient.createdAt = '';
 
-        this.ingredientService.addIngredient(this.ingredient)
-        .subscribe(
-          data  => { 
-            // console.log(data);
-            this.toastr.success('Ingrédient ajouté !', 'Congrat');
-            if (this.isFromModal) {
-              this.modalRef.close();
-            } else {
-              this.router.navigate(['ingredient']);
+        if (this.editMode) {
+          this.ingredientService.updateIngredient(this.ingredient)
+          .subscribe(
+            data  => { 
+              // console.log(data);
+              this.toastr.success('Ingrédient ajouté !', 'Congrat');
+              if (this.isFromModal) {
+                this.modalRef.close();
+              } else {
+                this.router.navigate(['ingredient']);
+              }
             }
-          },
-          error => Observable.throw(error)  
-        );
+          );
+        } else {
+          this.ingredientService.addIngredient(this.ingredient)
+          .subscribe(
+            data  => { 
+              // console.log(data);
+              this.toastr.success('Ingrédient ajouté !', 'Congrat');
+              if (this.isFromModal) {
+                this.modalRef.close();
+              } else {
+                this.router.navigate(['ingredient']);
+              }
+            }
+          );
+        }
 
       }
   }

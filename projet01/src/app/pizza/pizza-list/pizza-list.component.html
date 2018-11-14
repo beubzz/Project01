@@ -178,28 +178,30 @@
   </app-xpagination>
   -->
 
-  <!-- 
+  
   <ng-template #messageModal let-c="close" let-d="dismiss">
     <div class="modal-header">
-      <h1 class="modal-title">{{modalMessage.name}}</h1>
+      <h1 class="modal-title">{{modalPizza.name}}</h1>
       <button type="button" class="close" aria-label="Fermer" (click)="close()">
         <span aria-hidden="true">&times;</span>
       </button>
     </div>
     <div class="modal-body">
-      <app-message-details [messageId]="modalMessage.id"></app-message-details>
+      <!-- <app-message-details [messageId]="modalMessage.id"></app-message-details> -->
+      {{modalPizza | json}}
     </div>
     <div class="modal-footer">
-      <button class="btn btn-primary" type="button" [routerLink]="['/simulation/messages/edit', modalMessage.id]" (click)="modalRef.dismiss()"
+      <!-- <button class="btn btn-primary" type="button" [routerLink]="['/simulation/messages/edit', modalMessage.id]" (click)="modalRef.dismiss()"
         [disabled]="modalMessage.status === messageStatus.Active || modalMessage.scope !== messageScope.in" [title]="modalMessage.status === messageStatus.Active ? 'Le signal ne peut être modifié que s\'il est au préalable désactivé et s\'il est intégralement dans l\'import en cours.' : 'Modifier'">
         Modifier
-      </button>
+      </button> -->
       <button class="btn btn-secondary" (click)="close()">
         Fermer
       </button>
     </div>
   </ng-template>
   
+  <!-- 
   <ng-template #deleteModal let-c="close" let-d="dismiss">
     <div class="modal-header">
       <h1 class="modal-title">{{modalMessage.name}}</h1>

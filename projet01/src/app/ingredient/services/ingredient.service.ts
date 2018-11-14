@@ -54,7 +54,12 @@ export class IngredientService {
     return this.http.delete<Ingredient>(url, httpOptions);
   }
 
-  public updateIngredient(Ingredient: Ingredient, httpOptions: any): Observable<any> {
-    return this.http.put(this.ingredientsUrl, Ingredient, httpOptions);
+  public updateIngredient(Ingredient: Ingredient, httpOptions: any = null): Observable<any> {
+    const url = `${this.ingredientsUrl}/${Ingredient._id}`;
+    
+    return this.http.post(url, Ingredient, this.httpOptions);
   }
+  /* public updateIngredient(Ingredient: Ingredient, httpOptions: any = null): Observable<any> {
+    return this.http.put(this.ingredientsUrl, Ingredient, this.httpOptions);
+  }*/
 }

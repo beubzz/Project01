@@ -15,6 +15,10 @@ const routes: Routes = [
         path: 'add',
         component: IngredientFormComponent
     },
+    {
+        path: 'edit/:id',
+        component: IngredientFormComponent
+    },
 ];
 
 @NgModule({

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Pizza } from '../models/pizza.model';
 import { PizzaService } from '../services/pizza.service';
+import { NgbModalRef, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-pizza-list',
@@ -15,7 +16,10 @@ export class PizzaListComponent implements OnInit {
   public checkedPizza: Array<Pizza>;
   public isChecked: boolean;
 
-  constructor(private pizzaService: PizzaService) {
+  public modalRef: NgbModalRef;
+  public modalPizza: Pizza;
+
+  constructor(private pizzaService: PizzaService, private modalService: NgbModal) {
     this.checkedPizza = new Array();
   }
 
@@ -142,5 +146,26 @@ export class PizzaListComponent implements OnInit {
 
   public deactivate(pizza: Pizza) {
     console.log('desactivate !');
+  }
+
+  /**
+   * Open a modal
+   *
+   * @param content template to open
+   * @param size size the modal : lg or sm
+   * @param pizza: Pizza
+   */
+  public open(content, size: string = 'lg', pizza: Pizza) {
+    this.modalRef = this.modalService.open(content, {
+      size: size === 'lg' ? 'lg' : 'sm',
+    });
+    this.modalPizza = pizza;
+  }
+
+  /**
+   * close
+   */
+  public close(): void {
+    this.modalRef.dismiss();
   }
 }

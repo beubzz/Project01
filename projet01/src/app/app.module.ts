@@ -61,3 +61,14 @@ import { CommonModule } from '@angular/common';
   ]
 })
 export class AppModule { }
+
+// TODO :
+// Pizza and Ingredient Details
+// full commentary code
+// Pizza and Ingredient Form for edit case !
+// error message on form
+// Add toastr un peu de partout ;)
+// TODO (secondary)
+// pizza autocomplete ?
+// navigation routing (with button etc ...)
+// Styles ...
