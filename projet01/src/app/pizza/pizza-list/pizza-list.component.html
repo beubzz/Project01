@@ -1,3 +1,12 @@
+<div style="padding: 40px" class="card">
+  <div class="actions-on-table d-flex">
+    <div >blablabala</div>
+    <button class="btn btn-actions-on-table btn-primary ml-auto" type="button" [routerLink]="['add']"
+      routerLinkActive="router-link-active">
+      Ajouter
+    </button>
+  </div>
+
 <div class="actions-on-table text-right on-selection d-flex" *ngIf="checkedPizza && checkedPizza.length > 0">
     <div class="text-white font-md p-2 d-inline-block mr-auto">
       <span class="font-weight-bold">{{ checkedPizza?.length }}</span>
@@ -171,7 +180,7 @@
       -->
     </tbody>
   </table>
-
+</div>
   <!-- 
   <app-xpagination *ngIf="paginedResult && paginedResult?.pagination.PageCount >= 0" [pagination]="paginedResult?.pagination"
     [pagesToShow]="pageToShow" (goPage)="goToPage($event)" (goNext)="onNext()" (goPrev)="onPrev()" (nbResultChange)="onNbResultChange($event)">
@@ -201,23 +210,23 @@
     </div>
   </ng-template>
   
-  <!-- 
+  
   <ng-template #deleteModal let-c="close" let-d="dismiss">
     <div class="modal-header">
-      <h1 class="modal-title">{{modalMessage.name}}</h1>
+      <h1 class="modal-title">{{modalPizza.name}}</h1>
       <button type="button" class="close" aria-label="Fermer" (click)="close()">
         <span aria-hidden="true">&times;</span>
       </button>
     </div>
     <div class="modal-body">
-      <div>Êtes vous certain de vouloir supprimer ce message ?</div>
+      <div>Êtes vous certain de vouloir supprimer cette pizza ?</div>
     </div>
     <div class="modal-footer">
-      <button type="button" class="btn btn-danger" (click)="delete(modalMessage.id)">Supprimer</button>
+      <button type="button" class="btn btn-danger" (click)="delete(modalPizza._id)">Supprimer</button>
       <button type="button" class="btn btn-secondary" (click)="close()">Annuler</button>
     </div>
   </ng-template>
-  
+  <!-- 
   <ng-template #deleteBulkModal let-c="close" let-d="dismiss">
     <div class="modal-header">
       <h1 class="modal-title">Suppression de plusieurs messages</h1>

@@ -7,6 +7,8 @@
 const express = require('express');
 const router = express.Router();
 const Ingredient = require('../models/ingredient');
+var formidable = require('formidable');
+var fs = require('fs');
 // ************************************************************************** //
 //                                ROUTES                                      //
 // ************************************************************************** //
@@ -30,10 +32,12 @@ router.post('/:id', (req, res, next) => {
     updateIngredient(req, res, next);
 });
 
-// plus utilisé ! function put un peu obsoléte !
+// plus utilisé ! function PUT un peu obsoléte !
+/*
 router.put('/:id', (req, res, next) => {
-  updateIngredient(req, res, next);
+    updateIngredient(req, res, next);
 });
+*/
 
 router.delete('/:id', (req, res, next) => {
   deleteIngredient(req, res, next);
@@ -136,6 +140,19 @@ function getIngredientById(req, res, next){
 function postIngredient(req, res, next){
     
     const ingredient = new Ingredient(req.body);
+
+    var form = new formidable.IncomingForm();
+    form.parse(req, function (err, fields, files) {
+        console.log(files);
+        var oldpath = files.filetoupload.path;
+        var newpath = 'D:/projet01File/uploadFiles' + files.filetoupload.name;
+        fs.rename(oldpath, newpath, function (err) {
+            if (err) throw err;
+            res.write('File uploaded and moved!');
+            res.end();
+        });
+    });
+
     // console.log(ingredient);
     ingredient.save((err, ingredient) => {
         if (err) {

@@ -9,6 +9,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
+import { IngredientDetailComponent } from './ingredient-detail/ingredient-detail.component';
 
 @NgModule({
   imports: [
@@ -21,7 +22,8 @@ import { ToastrModule } from 'ngx-toastr';
   ],
   declarations: [
     IngredientFormComponent,
-    IngredientListComponent
+    IngredientListComponent,
+    IngredientDetailComponent
   ],
   providers: [
     IngredientService

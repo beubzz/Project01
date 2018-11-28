@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpEvent } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Pizza } from '../models/pizza.model';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
@@ -37,14 +37,22 @@ export class PizzaService {
     return this.http.post<Pizza>(this.pizzasUrl, pizza, this.httpOptions);
   }
 
-  public deletePizza(pizza: Pizza | string, httpOptions: any): Observable<HttpEvent<Pizza>> {
+  public deletePizza(pizza: Pizza | string, httpOptions: any = null): Observable<Pizza> {
     const id = typeof pizza === 'string' ? pizza : pizza._id;
     const url = `${this.pizzasUrl}/${id}`;
 
-    return this.http.delete<Pizza>(url, httpOptions);
+    return this.http.delete<Pizza>(url, this.httpOptions);
   }
 
+  public updatePizza(pizza: Pizza, httpOptions: any = null): Observable<any> {
+    const url = `${this.pizzasUrl}/${pizza._id}`;
+    
+    return this.http.post(url, pizza, this.httpOptions);
+  }
+  /* public updateIngredient(Ingredient: Ingredient, httpOptions: any = null): Observable<any> {
+    return this.http.put(this.ingredientsUrl, Ingredient, this.httpOptions);
+  }
   public updatePizza(pizza: Pizza, httpOptions: any): Observable<any> {
     return this.http.put(this.pizzasUrl, pizza, httpOptions);
-  }
+  }*/
 }

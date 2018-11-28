@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { IngredientService } from '../services/ingredient.service';
 import { Ingredient } from '../models/ingredient';
 import { NgbModalRef, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-ingredient-list',
@@ -20,7 +21,11 @@ export class IngredientListComponent implements OnInit {
   public modalIngredient: Ingredient;
 
 
-  constructor(private ingredientService: IngredientService, private modalService: NgbModal) {
+  constructor(
+    private ingredientService: IngredientService,
+    private toastr: ToastrService,
+    private modalService: NgbModal
+  ) {
     this.checkedIngredient = new Array();
   }
 
@@ -170,5 +175,21 @@ export class IngredientListComponent implements OnInit {
    */
   public close(): void {
     this.modalRef.dismiss();
+  }
+
+  public delete(ingredientId: string) {
+    // console.log(ingredientId);
+
+    this.ingredientService.deleteIngredient(ingredientId).subscribe(
+      data  => {
+        // console.log(data);
+        this.toastr.success('Ingredient supprimé !', 'Congrat');
+        // rechargement des données (donc sans l'element supprimé)
+        this.loadData();
+      },
+      error => console.log(error) // Observable.throw(error)  
+    );
+
+    this.close();
   }
 }

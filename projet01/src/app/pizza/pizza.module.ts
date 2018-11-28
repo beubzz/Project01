@@ -14,6 +14,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AddIngredientModalComponent } from './add-ingredient-modal/add-ingredient-modal.component';
 import { IngredientModule } from '../ingredient/ingredient.module';
 import { IngredientFormComponent } from '../ingredient/ingredient-form/ingredient-form.component';
+import { PizzaDetailComponent } from './pizza-detail/pizza-detail.component';
+import { FileDropModule } from 'ngx-file-drop';
+import { UploadModule } from '../shared/components/file-upload/file-upload.module';
 
 @NgModule({
   imports: [
@@ -27,11 +30,14 @@ import { IngredientFormComponent } from '../ingredient/ingredient-form/ingredien
     ReactiveFormsModule,
     MatAutocompleteModule,
     IngredientModule,
+    FileDropModule,
+    UploadModule
   ],
   declarations: [
     PizzaFormComponent,
     PizzaListComponent,
     AddIngredientModalComponent,
+    PizzaDetailComponent,
     // IngredientFormComponent
   ],
   providers: [

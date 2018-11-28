@@ -75,8 +75,8 @@ export class IngredientFormComponent implements OnInit {
         this.toastr.error('Le formulaire n\' a pas été rempli correctement', 'error');
         return;
       } else {
-        console.log(this.ingredient);
-        console.log(this.ingredientForm);
+        // console.log(this.ingredient);
+        // console.log(this.ingredientForm);
         this.ingredient.name = this.ingredientForm.value.name;
         this.ingredient.img = this.ingredientForm.value.img;
         this.ingredient.description = this.ingredientForm.value.description;

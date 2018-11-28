@@ -4,7 +4,7 @@
         <div class="row">
             <div class="col-md-6 offset-md-3">
                 <h2>Angular 6 Reactive Form Validation</h2>
-                <form [formGroup]="pizzaForm" (ngSubmit)="onSubmit()">
+                <form [formGroup]="pizzaForm" (ngSubmit)="onSubmit()" encType="multipart/form-data">
                     <div class="form-group">
                         <label>Name</label>
                         <input type="text" formControlName="name" class="form-control"
@@ -13,6 +13,27 @@
                             <div *ngIf="f.name.errors.required">First Name is required</div>
                         </div>
                     </div>
+
+
+
+                    <!-- <div class="center">
+                        <file-drop id="fichier" name="fichier" (change)="onFileChange($event)"
+                            headertext="Importer un fichier ou déposer votre fichier ici !" (onFileDrop)="dropped($event)" (click)="file.click()">
+                            <span>
+                                <input #file type="file" class="form-control" id="file" name="file" (change)="onFileChange($event)" hidden>
+                            </span>
+                        </file-drop>
+                    </div>
+                    <input #file type="file" class="form-control" id="file" name="file"> -->
+
+
+
+                    <app-upload></app-upload>
+
+
+
+
+                    <!-- 
                     <div class="form-group">
                         <label>Image</label>
                         <input type="text" formControlName="img"
@@ -21,6 +42,10 @@
                             <div *ngIf="f.img.errors.required">First Name is required</div>
                         </div>
                     </div>
+                    -->
+
+
+
                     <div class="form-group">
                         <label>Description</label>
                         <input type="text" formControlName="description"

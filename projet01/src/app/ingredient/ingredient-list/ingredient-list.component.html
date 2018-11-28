@@ -107,11 +107,11 @@
   
             </div>
           </td>
-          <td data-title="name" (click)="open(messageModal, 'lg', ingredient)" class="text-primary text-hover-underline pointer">{{ingredient.name}}</td>
+          <td data-title="name" (click)="open(ingredientModal, 'lg', ingredient)" class="text-primary text-hover-underline pointer">{{ingredient.name}}</td>
           
-          <td data-title="description" (click)="open(messageModal, 'lg', ingredient)" class="text-primary text-hover-underline pointer">{{ingredient.description}}</td>
-          <td data-title="img" (click)="open(messageModal, 'lg', ingredient)" class="text-primary text-hover-underline pointer">{{ingredient.img}}</td>
-          <td data-title="ingredients" (click)="open(messageModal, 'lg', ingredient)" class="text-primary text-hover-underline pointer">
+          <td data-title="description" (click)="open(ingredientModal, 'lg', ingredient)" class="text-primary text-hover-underline pointer">{{ingredient.description}}</td>
+          <td data-title="img" (click)="open(ingredientModal, 'lg', ingredient)" class="text-primary text-hover-underline pointer">{{ingredient.img}}</td>
+          <td data-title="ingredients" (click)="open(ingredientModal, 'lg', ingredient)" class="text-primary text-hover-underline pointer">
             {{ ingredient.weight }} | {{ ingredient.price }}
           </td>
           <td class="p-0">
@@ -132,7 +132,7 @@
                   <button type="button" class="btn btn-link btn-block text-left text-color px-2 py-1" (click)="deactivate(ingredient)">Désactiver</button>
                 </li>
                 <li class="dropdown-item p-0">
-                  <button type="button" class="btn btn-link btn-block text-left text-danger px-2 py-1" (click)="open(deleteModal, 'lg', pizza)">Supprimer</button>
+                  <button type="button" class="btn btn-link btn-block text-left text-danger px-2 py-1" (click)="open(deleteModal, 'lg', ingredient)">Supprimer</button>
                 </li>
               </ul>
             </div>
@@ -158,7 +158,7 @@
   -->
 
   
-  <ng-template #messageModal let-c="close" let-d="dismiss">
+  <ng-template #ingredientModal let-c="close" let-d="dismiss">
     <div class="modal-header">
       <h1 class="modal-title">{{modalIngredient.name}}</h1>
       <button type="button" class="close" aria-label="Fermer" (click)="close()">
@@ -179,3 +179,20 @@
       </button>
     </div>
   </ng-template>
+
+
+<ng-template #deleteModal let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h1 class="modal-title">{{modalIngredient.name}}</h1>
+    <button type="button" class="close" aria-label="Fermer" (click)="close()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div>Êtes vous certain de vouloir supprimer cette pizza ?</div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-danger" (click)="delete(modalIngredient._id)">Supprimer</button>
+    <button type="button" class="btn btn-secondary" (click)="close()">Annuler</button>
+  </div>
+</ng-template>

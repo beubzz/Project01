@@ -9,6 +9,9 @@ import { Ingredient } from 'src/app/ingredient/models/ingredient';
 import { IngredientService } from 'src/app/ingredient/services/ingredient.service';
 import { map, distinctUntilChanged, debounceTime, startWith, delay, filter, tap, switchMap, catchError } from 'rxjs/operators';
 import { NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
+import { UploadFile, UploadEvent, FileSystemFileEntry, FileSystemDirectoryEntry } from 'ngx-file-drop';
+import { HttpErrorResponse } from '@angular/common/http';
+import { UploadService } from 'src/app/shared/components/file-upload/file-upload.service';
 
 @Component({
   selector: 'app-pizza-form',
@@ -28,13 +31,15 @@ export class PizzaFormComponent implements OnInit {
   public isLoading: boolean;
   public ingredientArray: Array<Ingredient>;
   public editMode: boolean;
+  public fileToUpload: File;
   
   constructor(
     private formBuilder: FormBuilder,
     private toastr: ToastrService,
     private router: Router,
     private pizzaService: PizzaService,
-    private ingredientService: IngredientService
+    private ingredientService: IngredientService,
+    private uploadFileService: UploadService
   ) {
     this.submitted = false;
     this.pizza = new Pizza();
@@ -46,7 +51,7 @@ export class PizzaFormComponent implements OnInit {
   ngOnInit() {
     this.pizzaForm = this.formBuilder.group({
       name: ['', Validators.required],
-      img: ['', Validators.required],
+      img: ['', ], // Validators.required],
       description: ['', Validators.required],
       lat: ['', Validators.required],
       long: ['', Validators.required],
@@ -104,7 +109,7 @@ export class PizzaFormComponent implements OnInit {
 
   onSubmit() {
       this.submitted = true;
-      // console.log(this.pizzaForm);
+      console.log(this.pizzaForm);
 
       // stop here if form is invalid
       if (this.pizzaForm.invalid) {
@@ -127,16 +132,78 @@ export class PizzaFormComponent implements OnInit {
         this.pizza.createdAt = '';
         // console.log('ici', this.pizza);
 
-        this.pizzaService.addPizza(this.pizza)
-        .subscribe(
-          data  => { 
-            // console.log(data);
-            this.toastr.success('Pizza ajouté !', 'Congrat');
-            this.router.navigate(['pizza']);
-          },
-          error => Observable.throw(error)  
-        );
+        if (this.editMode) {
+          this.pizzaService.updatePizza(this.pizza)
+          .subscribe(
+            data  => { 
+              // console.log(data);
+              this.toastr.success(`Pizza : ${data.name} modifié !`, 'Congrat');
+              this.router.navigate(['pizza']);
+            },
+            error => console.log(error) // Observable.throw(error)  
+          );
+        } else {
+          this.pizzaService.addPizza(this.pizza)
+          .subscribe(
+            data  => { 
+              this.uploadFile(this.fileToUpload);
+
+              console.log(' ca paaaaaasssse !');
+              this.uploadFileService.upload(this.fileToUpload);
+
+              
+              // console.log(data);
+              this.toastr.success('Pizza ajouté !', 'Congrat');
+              this.router.navigate(['pizza']);
+            },
+            error => console.log(error) // Observable.throw(error)  
+          );
+        }
 
       }
   }
+
+  //cpublic files: UploadFile[] = [];
+ 
+  public dropped(event: UploadEvent) {
+    // this.fileToUpload2 = event.files;
+
+    // Verification du fichier uploader (Cas fichier)
+    if (event.files.length === 1) {
+    // Verification que ce soit bien un fichier (un dossier zip est interprété comme un fichier)
+    if (event.files[0].fileEntry.isFile) {
+    const fileEntry = event.files[0].fileEntry as FileSystemFileEntry;
+    fileEntry.file((file: File) => {
+    // this.importForm.controls.fichierExisting.setValue(false);
+    this.fileToUpload = file;
+    // this.onFileChange(file);
+    });
+    } else {
+    this.toastr.error('Ceci n\'est pas un fichier', 'Erreur');
+    }
+    } else {
+    // Verification du fichier uploader (Cas dossier donc plusieurs fichiers)
+    this.toastr.error('Ceci n\'est pas un fichier', 'Erreur');
+    }
+  }
+ 
+  public fileOver(event){
+    console.log(event);
+  }
+ 
+  public fileLeave(event){
+    console.log(event);
+  }
+
+   /**
+ * uploadFile
+ *
+ * Permet d'envoyer en POST notre formulaire
+ */
+  private uploadFile(file) {
+    // let test = this.pizzaService.upload(file);
+    console.log(file);
+    // test.subscribe();
+  }
+
 }

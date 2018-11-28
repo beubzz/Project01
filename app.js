@@ -19,12 +19,12 @@ app.use(bodyParser.json());
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    res.header('Access-Control-Allow-Methods', 'GET,POST,DELETE');
   next();
 });
 
 app.use('/ingredient', ingredientController);
 app.use('/pizza', pizzaController);
-
 
 app.listen(PORT, function(){
     console.log('Your node js server is running on PORT:',PORT);

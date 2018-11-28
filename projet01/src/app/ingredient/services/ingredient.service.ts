@@ -47,11 +47,11 @@ export class IngredientService {
     return this.http.post<Ingredient>(this.ingredientsUrl, ingredient, this.httpOptions);
   }
 
-  public deleteIngredient(Ingredient: Ingredient | string, httpOptions: any): Observable<HttpEvent<Ingredient>> {
+  public deleteIngredient(Ingredient: Ingredient | string, httpOptions: any = null): Observable<Ingredient> {
     const id = typeof Ingredient === 'string' ? Ingredient : Ingredient._id;
     const url = `${this.ingredientsUrl}/${id}`;
 
-    return this.http.delete<Ingredient>(url, httpOptions);
+    return this.http.delete<Ingredient>(url, this.httpOptions);
   }
 
   public updateIngredient(Ingredient: Ingredient, httpOptions: any = null): Observable<any> {

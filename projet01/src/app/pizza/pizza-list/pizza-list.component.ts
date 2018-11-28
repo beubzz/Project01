@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Pizza } from '../models/pizza.model';
 import { PizzaService } from '../services/pizza.service';
 import { NgbModalRef, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-pizza-list',
@@ -19,16 +20,29 @@ export class PizzaListComponent implements OnInit {
   public modalRef: NgbModalRef;
   public modalPizza: Pizza;
 
-  constructor(private pizzaService: PizzaService, private modalService: NgbModal) {
+  constructor(
+    private pizzaService: PizzaService,
+    private modalService: NgbModal,
+    private toastr: ToastrService,
+  ) {
     this.checkedPizza = new Array();
   }
 
   ngOnInit() {
+    this.loadData();
+    // console.log(this.pizzas);
+  }
+
+  /**
+   * loadData
+   *
+   * Methode de chargement des données
+   */
+  public loadData() {
     this.pizzaService.getPizzas().subscribe(res => {
       this.pizzas = res;
-      console.log(this.pizzas);
+      // console.log(this.pizzas);
     });
-    // console.log(this.pizzas);
   }
 
   /**
@@ -167,5 +181,21 @@ export class PizzaListComponent implements OnInit {
    */
   public close(): void {
     this.modalRef.dismiss();
+  }
+
+  public delete(pizzaId: string) {
+    console.log(pizzaId);
+
+    this.pizzaService.deletePizza(pizzaId).subscribe(
+      data  => { 
+        // console.log(data);
+        this.toastr.success('Pizza supprimé !', 'Congrat');
+        // rechargement des données (donc sans l'element supprimé)
+        this.loadData();
+      },
+      error => console.log(error) // Observable.throw(error)  
+    );
+
+    this.close();
   }
 }
