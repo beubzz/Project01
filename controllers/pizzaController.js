@@ -9,7 +9,20 @@ const express = require('express');
 const router = express.Router();
 const Pizza = require('../models/pizza');
 const fileUpload = require('express-fileupload');
-const IncomingForm = require('formidable').IncomingForm;
+const formidable = require('formidable');
+
+var multer  = require('multer')
+// var upload = multer({ dest: '../uploads/' })
+var storage = multer.diskStorage({
+    destination: function(req, file, callback) {
+        callback(null, '../uploads/')
+    },
+    filename: function(requ, file, callback) {
+        callback(null, Date.now()+file.originalname);
+    }
+});
+
+var upload = multer({storage : storage}).single('file');
 
 // ************************************************************************** //
 //                                ROUTES                                      //
@@ -22,12 +35,21 @@ router.get('/:id', (req, res, next) => {
     getPizzaById(req, res, next);
 });
 
+/*
 router.post('/', (req, res, next) => {
     postPizza(req, res, next);
 });
 
 router.post('/upload', (req, res, next) => {
     upload(req, res, next);
+});
+*/
+
+
+router.post('/', function (req, res, next) { // upload.array('imgs', 12),
+    
+    // console.log('---------------');
+    postPizza(req, res, next);
 });
 
 router.post('/:id', (req, res, next) => {
@@ -118,16 +140,70 @@ function getPizzaById(req, res, next) {
  * @returns {Promise.<void>} Call res.status() with a status code to say what happens and res.json() to send data if there is any.
  */
 function postPizza(req, res, next) {
+    let pizza = null;
+    
+    var form = new formidable.IncomingForm();
 
-    const pizza = new Pizza(req.body);
+    form.parse(req);
+
+    // représente un forEach files
+    form.on('fileBegin', function (name, file){
+        // console.log(file);
+        file.path = './uploads/' + file.name;
+        console.log(file.path);
+    });
+
+    form.on('fileEnd', function (name, file){
+        // console.log(file);
+        // file.path = './uploads/' + file.name;
+        console.log('------------ c est passé !!! ----------------');
+    });
+
+    form.on('field', function(field, value) {
+        // console.log(field);
+        // console.log('----------------- IIIIICICCCCCCIIIIIII ---------------');
+        // console.log(value);
+        // req.body = value;
+        // console.log('----------------- IIIIICICCCCCCIIIIIII ---------------');
+        // console.log(JSON.parse(value));
+        pizza = new Pizza(JSON.parse(value));
+        // console.log('---------------- 170 ------------');
+        // console.log(pizza);
+        if (pizza) {
+            pizza.save((err, piz) => {
+                if (err) {
+                    // console.log(err);
+                    res.status(500).send(err);
+                } else {
+                    // console.log('------------ LA! -----------', piz);
+                    res.status(200).send(piz);
+                    // SOCKET
+                    // global.io.emit('[Pizza][post]', pizza);
+                    // global.io.emit('[Toast][new]', { type: 'success', title: `Nouvelle Pizza`, message: 'Une nouvelle pizza a été ajoutée !' });
+                }
+        
+            });
+        }
+        // fields.push([field, value]);
+    })
+
+    // console.log('---------------- 175 ------------');
+    // console.log(pizza);
+    /*console.log('---------------- 172 ------------');
+    console.log(req.body);
+    console.log('---------------- 174 ------------');
+    console.log(req.body.content);
+
+    const pizza = new Pizza(JSON.parse(req.body));*/
     // console.log(pizza);
 
-    console.log(req.files);
-    console.log(req.body);
+    // console.log(req.files);
+    // pizza = JSON.parse(pizza);
+    // console.log(pizza);
 
-    var form = new IncomingForm();
+    // var form = new IncomingForm();
 
-    form.on('file', (field, file) => {
+    /* form.on('file', (field, file) => {
         // Do something with the file
         // e.g. save it to the database
         // you can access it using file.path
@@ -135,21 +211,7 @@ function postPizza(req, res, next) {
     form.on('end', () => {
         res.json();
     });
-    form.parse(req);
-
-
-    pizza.save((err, pizza) => {
-        if (err) {
-            // console.log(err);
-            res.status(500).send(err);
-        } else {
-            res.status(200).send(pizza);
-            // SOCKET
-            // global.io.emit('[Pizza][post]', pizza);
-            // global.io.emit('[Toast][new]', { type: 'success', title: `Nouvelle Pizza`, message: 'Une nouvelle pizza a été ajoutée !' });
-        }
-
-    });
+    form.parse(req); */
 
 }
 

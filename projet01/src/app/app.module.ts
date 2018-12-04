@@ -16,8 +16,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { ToastrModule } from 'ngx-toastr';
 import { FileDropModule } from 'ngx-file-drop';
 import { CommonModule } from '@angular/common';
-import { UploadModule } from './shared/components/file-upload/file-upload.module';
-// import { FileUploadComponent } from './shared/components/file-upload/file-upload.component';
 
 @NgModule({
   declarations: [
@@ -75,3 +73,15 @@ export class AppModule { }
 // pizza autocomplete ?
 // navigation routing (with button etc ...)
 // Styles ...
+
+// REPRENDRE le composant d'ajout de fichier ! a mettre parfaitement au point !
+// Avec fileDrop si possible !
+
+// OK premier test d'upload de fichier multiple en place ! a voir pour un composant shared ?
+// + REMETTRE AU PROPRE : 
+// - pizzaController -> faire des verification / validateur + gestion des err etc ! (propre + secure)
+// - A mettre en place en tant que composant shared
+// - voir fonction pour afficher les images !
+// - pizzaForm html et ts faire propre + securisé un minimum !
+
+// LEAFLET ;) 

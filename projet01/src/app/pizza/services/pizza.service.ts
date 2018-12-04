@@ -12,7 +12,8 @@ export class PizzaService {
 
   private httpOptions = {
     headers: new HttpHeaders({
-      'Content-Type':  'application/json',
+      'Content-Type':  'application/json', 
+      'Accept': 'application/json',
     })
   };
 
@@ -33,8 +34,10 @@ export class PizzaService {
   }
 
   // CHANGER LE TYPE ANY POUR TOUT LES HTTPOPTIONS !!!
-  public addPizza(pizza: Pizza, httpOptions: any = null): Observable<Pizza> {
-    return this.http.post<Pizza>(this.pizzasUrl, pizza, this.httpOptions);
+  public addPizza(pizza: any, httpOptions: any = null): Observable<any> {
+    // return this.http.post<Pizza>(this.pizzasUrl, pizza, this.httpOptions);
+    console.log(pizza);
+    return this.http.post(this.pizzasUrl, pizza);
   }
 
   public deletePizza(pizza: Pizza | string, httpOptions: any = null): Observable<Pizza> {

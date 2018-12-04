@@ -16,7 +16,7 @@
 
 
 
-                    <!-- <div class="center">
+                    <div class="center">
                         <file-drop id="fichier" name="fichier" (change)="onFileChange($event)"
                             headertext="Importer un fichier ou déposer votre fichier ici !" (onFileDrop)="dropped($event)" (click)="file.click()">
                             <span>
@@ -24,11 +24,11 @@
                             </span>
                         </file-drop>
                     </div>
-                    <input #file type="file" class="form-control" id="file" name="file"> -->
+                    <input #file type="file" class="form-control" id="file" name="filesUploaded" multiple (change)="addFile($event)">
+                    <!--  (change)="getUploadedFile($event)">  -->
 
 
-
-                    <app-upload></app-upload>
+                    <!-- <app-upload (outputFile)="getUploadedFile($event)"></app-upload> -->
 
 
 

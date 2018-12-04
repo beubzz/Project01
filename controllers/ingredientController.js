@@ -141,7 +141,7 @@ function postIngredient(req, res, next){
     
     const ingredient = new Ingredient(req.body);
 
-    var form = new formidable.IncomingForm();
+    /*var form = new formidable.IncomingForm();
     form.parse(req, function (err, fields, files) {
         console.log(files);
         var oldpath = files.filetoupload.path;
@@ -151,7 +151,8 @@ function postIngredient(req, res, next){
             res.write('File uploaded and moved!');
             res.end();
         });
-    });
+    });*/
+    console.log(ingredient);
 
     // console.log(ingredient);
     ingredient.save((err, ingredient) => {

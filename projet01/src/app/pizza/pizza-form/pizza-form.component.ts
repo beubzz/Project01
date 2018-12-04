@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { PizzaService } from '../services/pizza.service';
 import { Pizza } from '../models/pizza.model';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
@@ -7,11 +7,9 @@ import { Router } from '@angular/router';
 import { Observable, Subject, merge, concat, of } from 'rxjs';
 import { Ingredient } from 'src/app/ingredient/models/ingredient';
 import { IngredientService } from 'src/app/ingredient/services/ingredient.service';
-import { map, distinctUntilChanged, debounceTime, startWith, delay, filter, tap, switchMap, catchError } from 'rxjs/operators';
-import { NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
-import { UploadFile, UploadEvent, FileSystemFileEntry, FileSystemDirectoryEntry } from 'ngx-file-drop';
-import { HttpErrorResponse } from '@angular/common/http';
-import { UploadService } from 'src/app/shared/components/file-upload/file-upload.service';
+import { distinctUntilChanged, debounceTime, startWith, delay, filter, tap, switchMap, catchError } from 'rxjs/operators';
+import { UploadEvent, FileSystemFileEntry } from 'ngx-file-drop';
+import { HttpHeaders } from '@angular/common/http';
 
 @Component({
   selector: 'app-pizza-form',
@@ -19,6 +17,7 @@ import { UploadService } from 'src/app/shared/components/file-upload/file-upload
   styleUrls: ['./pizza-form.component.css']
 })
 export class PizzaFormComponent implements OnInit {
+  @ViewChild('file') file: ElementRef;
 
   public pizzaForm: FormGroup;
   public submitted: boolean = false;
@@ -32,14 +31,14 @@ export class PizzaFormComponent implements OnInit {
   public ingredientArray: Array<Ingredient>;
   public editMode: boolean;
   public fileToUpload: File;
+  public filesToUpload: Array<File>;
   
   constructor(
     private formBuilder: FormBuilder,
     private toastr: ToastrService,
     private router: Router,
     private pizzaService: PizzaService,
-    private ingredientService: IngredientService,
-    private uploadFileService: UploadService
+    private ingredientService: IngredientService
   ) {
     this.submitted = false;
     this.pizza = new Pizza();
@@ -99,7 +98,11 @@ export class PizzaFormComponent implements OnInit {
         this.pizzaForm.controls.ingredients.setValue(this.pizza.ingredients);
       })
     }
+  }
 
+  public getUploadedFile(files: Array<File>) {
+    console.log('ca marche !!', files);
+    this.pizzaForm.controls.img.setValue(files);
   }
 
   // convenience getter for easy access to form fields
@@ -107,9 +110,43 @@ export class PizzaFormComponent implements OnInit {
     return this.pizzaForm.controls;
   }
 
-  onSubmit() {
+  public test(f: File) {
+    return f.name;
+  }
+
+  public addFile(fil): void {
+    // console.log(fil.target.files);
+    // console.log(this.file.nativeElement);
+    let fi = fil.target;
+    if (fi.files && fi.files[0]) {
+        this.filesToUpload = fi.files;
+        console.log(this.filesToUpload);
+        const imgArray = new Array();
+        for (const file of this.filesToUpload) {
+          imgArray.push(file.name);
+        }
+        this.pizzaForm.controls.img.setValue(imgArray);
+
+        // let input = new FormData();
+        // input.append("files", this.fileToUpload);
+        /* this.uploadService
+            .upload(fileToUpload)
+            .subscribe(res => {
+                console.log(res);
+            });*/
+        }
+    }
+
+  public onSubmit() {
       this.submitted = true;
       console.log(this.pizzaForm);
+
+      
+      // this.uploading = true;
+     
+      // const parametersSw = this.dataService.convertToDataParametersW(this.parametersForm);
+     
+      // this.formSubscribe = this.dataService.upload(formData).subscribe(
 
       // stop here if form is invalid
       if (this.pizzaForm.invalid) {
@@ -143,13 +180,24 @@ export class PizzaFormComponent implements OnInit {
             error => console.log(error) // Observable.throw(error)  
           );
         } else {
-          this.pizzaService.addPizza(this.pizza)
-          .subscribe(
-            data  => { 
-              this.uploadFile(this.fileToUpload);
+          console.log('sa paassse ?');
+          console.log(this.pizza);
+          console.log(this.filesToUpload[0]);
 
-              console.log(' ca paaaaaasssse !');
-              this.uploadFileService.upload(this.fileToUpload);
+          const formData = new FormData();
+
+          // formData.append('body', JSON.stringify(this.pizza));
+          formData.append('file', this.filesToUpload[0], this.filesToUpload[0].name);
+          formData.append('file2', this.filesToUpload[1], this.filesToUpload[1].name);
+          formData.append('content', JSON.stringify(this.pizza));
+
+          // console.log(this.pizzaForm.value);
+
+          this.pizzaService.addPizza(formData) // this.pizza)
+          .subscribe(
+            data  => {
+              console.log(data);
+              // this.uploadFile(this.fileToUpload);
 
               
               // console.log(data);

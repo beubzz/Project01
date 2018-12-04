@@ -196,7 +196,10 @@
       </button>
     </div>
     <div class="modal-body">
-      <!-- <app-message-details [messageId]="modalMessage.id"></app-message-details> -->
+      <!-- <app-pizza-details [messageId]="modalMessage.id"></app-pizza-details> -->
+      <div *ngFor="let image of modalPizza.img">
+        <img src="../../../../../uploads/{{image}}" />
+      </div>
       {{modalPizza | json}}
     </div>
     <div class="modal-footer">
