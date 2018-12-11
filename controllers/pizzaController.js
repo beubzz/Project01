@@ -8,21 +8,8 @@
 const express = require('express');
 const router = express.Router();
 const Pizza = require('../models/pizza');
-const fileUpload = require('express-fileupload');
 const formidable = require('formidable');
 
-var multer  = require('multer')
-// var upload = multer({ dest: '../uploads/' })
-var storage = multer.diskStorage({
-    destination: function(req, file, callback) {
-        callback(null, '../uploads/')
-    },
-    filename: function(requ, file, callback) {
-        callback(null, Date.now()+file.originalname);
-    }
-});
-
-var upload = multer({storage : storage}).single('file');
 
 // ************************************************************************** //
 //                                ROUTES                                      //
@@ -35,20 +22,7 @@ router.get('/:id', (req, res, next) => {
     getPizzaById(req, res, next);
 });
 
-/*
-router.post('/', (req, res, next) => {
-    postPizza(req, res, next);
-});
-
-router.post('/upload', (req, res, next) => {
-    upload(req, res, next);
-});
-*/
-
-
-router.post('/', function (req, res, next) { // upload.array('imgs', 12),
-    
-    // console.log('---------------');
+router.post('/', function (req, res, next) {
     postPizza(req, res, next);
 });
 
@@ -56,14 +30,28 @@ router.post('/:id', (req, res, next) => {
     updatePizza(req, res, next);
 });
 
-/*
-router.put('/:id', (req, res, next) => {
-    putPizza(req, res, next);
-});
-*/
-
 router.delete('/:id', (req, res, next) => {
     deletePizza(req, res, next);
+});
+
+router.get('/img/:name', function (req, res, next) {
+
+    var options = {
+        root: './uploads/',
+        headers: {
+            'Content-Type': 'image/png, image/PNG, image/jpg, image/JPG'
+        }
+    };
+
+    var fileName = req.params.name;
+    res.sendFile(fileName, options, function (err) {
+        if (err) {
+            next(err);
+        } else {
+            console.log('Sent:', fileName);
+        }
+    });
+
 });
 
 // ************************************************************************** //
@@ -91,8 +79,8 @@ function getPizzas(req, res, next) {
     /*.populate({
         match: { deleted: false }
     })*/.exec(function (err, story) {
-        if (err) return console.log(err);
-    });
+            if (err) return console.log(err);
+        });
 
 }
 
@@ -140,79 +128,51 @@ function getPizzaById(req, res, next) {
  * @returns {Promise.<void>} Call res.status() with a status code to say what happens and res.json() to send data if there is any.
  */
 function postPizza(req, res, next) {
+    // init de notre object qui sera utilisé et renvoyé
     let pizza = null;
-    
+
+    // init du formulaire d'entré en tant que Formidable Form
     var form = new formidable.IncomingForm();
 
+    // parse de la request passé
     form.parse(req);
 
-    // représente un forEach files
-    form.on('fileBegin', function (name, file){
-        // console.log(file);
+    // représente un forEach files et nous permet d'uploader les fichier dans le dossier uploads
+    form.on('fileBegin', function (name, file) {
         file.path = './uploads/' + file.name;
-        console.log(file.path);
+        // console.log(file.path);
     });
 
+    /*
+    Ne pas supprimer au cas pour une progress bar
     form.on('fileEnd', function (name, file){
         // console.log(file);
         // file.path = './uploads/' + file.name;
         console.log('------------ c est passé !!! ----------------');
     });
+    */
 
-    form.on('field', function(field, value) {
-        // console.log(field);
-        // console.log('----------------- IIIIICICCCCCCIIIIIII ---------------');
-        // console.log(value);
-        // req.body = value;
-        // console.log('----------------- IIIIICICCCCCCIIIIIII ---------------');
-        // console.log(JSON.parse(value));
+    // si il y a bien des champs dans le formulaire (autre que des fichiers)
+    form.on('field', function (field, value) {
+        // initialisation de notre object avec les bonnes valeurs
         pizza = new Pizza(JSON.parse(value));
-        // console.log('---------------- 170 ------------');
-        // console.log(pizza);
+        // Si cet objet est correct :
         if (pizza) {
+            // on save notre object remplie en base !
             pizza.save((err, piz) => {
                 if (err) {
                     // console.log(err);
                     res.status(500).send(err);
                 } else {
-                    // console.log('------------ LA! -----------', piz);
+                    // console.log(piz);
                     res.status(200).send(piz);
                     // SOCKET
                     // global.io.emit('[Pizza][post]', pizza);
                     // global.io.emit('[Toast][new]', { type: 'success', title: `Nouvelle Pizza`, message: 'Une nouvelle pizza a été ajoutée !' });
                 }
-        
             });
         }
-        // fields.push([field, value]);
     })
-
-    // console.log('---------------- 175 ------------');
-    // console.log(pizza);
-    /*console.log('---------------- 172 ------------');
-    console.log(req.body);
-    console.log('---------------- 174 ------------');
-    console.log(req.body.content);
-
-    const pizza = new Pizza(JSON.parse(req.body));*/
-    // console.log(pizza);
-
-    // console.log(req.files);
-    // pizza = JSON.parse(pizza);
-    // console.log(pizza);
-
-    // var form = new IncomingForm();
-
-    /* form.on('file', (field, file) => {
-        // Do something with the file
-        // e.g. save it to the database
-        // you can access it using file.path
-    });
-    form.on('end', () => {
-        res.json();
-    });
-    form.parse(req); */
-
 }
 
 /**
@@ -282,12 +242,12 @@ function upload(req, res, next) {
  * @param {Object} res - Response object.
  * @returns {Promise.<void>} Call res.status() with a status code to say what happens and res.json() to send data if there is any.
  */
-function updatePizza(req, res, next){
-    
+function updatePizza(req, res, next) {
+
     let pizza = new Pizza(req.body);
     pizza.updated_at = new Date;
 
-    Pizza.findOneAndUpdate({_id: req.params.id}, pizza, { new: true }, (err, pizza) => {
+    Pizza.findOneAndUpdate({ _id: req.params.id }, pizza, { new: true }, (err, pizza) => {
         if (err) {
             res.status(500).send(err);
         } else if (pizza === null) {

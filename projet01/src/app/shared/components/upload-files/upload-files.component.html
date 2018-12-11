@@ -1,3 +1,8 @@
-<p>
-  upload-files works!
-</p>
+<div class="center">
+  <file-drop id="fichier" name="fichier" (change)="addFile($event.target)"
+      headertext="Importer un fichier ou déposer votre fichier ici !" (onFileDrop)="addFile($event, true)" (click)="file.click()">
+      <span>
+          <input #file type="file" class="form-control" id="file" name="filesUploaded" multiple hidden>
+      </span>
+  </file-drop>
+</div>

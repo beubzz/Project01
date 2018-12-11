@@ -4,6 +4,7 @@ import { Pizza } from '../models/pizza.model';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { HttpHeaders } from '@angular/common/http';
+import { ResponseContentType } from '@angular/http';
 
 @Injectable({
   providedIn: 'root'
@@ -52,6 +53,12 @@ export class PizzaService {
     
     return this.http.post(url, pizza, this.httpOptions);
   }
+
+  public getImage(imageName: string): Observable<Blob> {
+    const protectedUrl = `${this.pizzasUrl}/img/${imageName}`;
+    return this.http.get(protectedUrl, { responseType: 'blob' });
+  }
+
   /* public updateIngredient(Ingredient: Ingredient, httpOptions: any = null): Observable<any> {
     return this.http.put(this.ingredientsUrl, Ingredient, this.httpOptions);
   }

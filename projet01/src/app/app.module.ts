@@ -66,7 +66,7 @@ export class AppModule { }
 // TODO :
 // Pizza and Ingredient Details
 // full commentary code
-// Pizza and Ingredient Form for edit case !
+// Ingredient Form for edit case !
 // error message on form
 // Add toastr un peu de partout ;)
 // TODO (secondary)
@@ -74,14 +74,10 @@ export class AppModule { }
 // navigation routing (with button etc ...)
 // Styles ...
 
-// REPRENDRE le composant d'ajout de fichier ! a mettre parfaitement au point !
-// Avec fileDrop si possible !
-
-// OK premier test d'upload de fichier multiple en place ! a voir pour un composant shared ?
-// + REMETTRE AU PROPRE : 
+// - REMETTRE AU PROPRE : 
 // - pizzaController -> faire des verification / validateur + gestion des err etc ! (propre + secure)
-// - A mettre en place en tant que composant shared
-// - voir fonction pour afficher les images !
 // - pizzaForm html et ts faire propre + securisé un minimum !
+
+// - supprimer les images uploader if delete de la pizza ou ingredient mais si cet element uniquement contenais cette images
 
 // LEAFLET ;) 

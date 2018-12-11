@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Pizza } from '../models/pizza.model';
 import { PizzaService } from '../services/pizza.service';
 import { NgbModalRef, NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -10,6 +10,7 @@ import { ToastrService } from 'ngx-toastr';
   styleUrls: ['./pizza-list.component.css']
 })
 export class PizzaListComponent implements OnInit {
+  @ViewChild('imgSource') imgSource: ElementRef;
 
   public pizza: Pizza;
   public pizzas: Array<Pizza>;
@@ -20,12 +21,20 @@ export class PizzaListComponent implements OnInit {
   public modalRef: NgbModalRef;
   public modalPizza: Pizza;
 
+  public images: Array<any>;
+  public test: boolean;
+
+  // imageToShow: any;
+  public isImageLoading: boolean;
+
   constructor(
     private pizzaService: PizzaService,
     private modalService: NgbModal,
     private toastr: ToastrService,
   ) {
     this.checkedPizza = new Array();
+    this.test = false;
+    // this.images = new Array();
   }
 
   ngOnInit() {
@@ -170,6 +179,10 @@ export class PizzaListComponent implements OnInit {
    * @param pizza: Pizza
    */
   public open(content, size: string = 'lg', pizza: Pizza) {
+    // console.log(this.imgSource.nativeElement);
+    this.images = new Array();
+    this.getImageFromService(pizza);
+
     this.modalRef = this.modalService.open(content, {
       size: size === 'lg' ? 'lg' : 'sm',
     });
@@ -183,11 +196,45 @@ export class PizzaListComponent implements OnInit {
     this.modalRef.dismiss();
   }
 
+
+  createImageFromBlob(image: Blob) {
+    let reader = new FileReader();
+    reader.addEventListener("load", () => {
+      // this.imageToShow = reader.result;
+      this.images.push(reader.result);
+      // console.log(this.images);
+    }, false);
+
+    if (image) {
+      reader.readAsDataURL(image);
+    }
+  }
+
+  getImageFromService(pizza: Pizza) {
+    this.isImageLoading = true;
+    for (let image of pizza.img) {
+      // console.log(image);
+      this.pizzaService.getImage(image).subscribe(data => {
+        this.createImageFromBlob(data);
+        
+        setTimeout(res => (this.isImageLoading = false), 500);
+
+        // this.isImageLoading = false;
+      }, error => {
+        this.isImageLoading = false;
+        console.log(error);
+      });
+    }
+  }
+
+
+
+
   public delete(pizzaId: string) {
     console.log(pizzaId);
 
     this.pizzaService.deletePizza(pizzaId).subscribe(
-      data  => { 
+      data => {
         // console.log(data);
         this.toastr.success('Pizza supprimé !', 'Congrat');
         // rechargement des données (donc sans l'element supprimé)

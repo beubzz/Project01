@@ -16,15 +16,29 @@
 
 
 
+                    <!-- NE PAS SUPPRIMER !!! sa marche trés bien !!!
                     <div class="center">
-                        <file-drop id="fichier" name="fichier" (change)="onFileChange($event)"
+                        <file-drop id="fichier" name="fichier" (change)="addFile($event)"
                             headertext="Importer un fichier ou déposer votre fichier ici !" (onFileDrop)="dropped($event)" (click)="file.click()">
                             <span>
-                                <input #file type="file" class="form-control" id="file" name="file" (change)="onFileChange($event)" hidden>
+                                <input #file type="file" class="form-control" id="file" name="filesUploaded" multiple hidden>
                             </span>
                         </file-drop>
+                    </div> 
+
+                -->
+                <app-upload-files (addedFiles)="getAddedFiles($event)"></app-upload-files>
+
+
+                    <div *ngIf="pizzaForm.value.img.length > 0 && pizzaForm.controls.img.valid">
+                        <div *ngFor="let img of pizzaForm.value.img">
+                            <span>
+                                {{img}}
+                            </span>
+                        </div>
                     </div>
-                    <input #file type="file" class="form-control" id="file" name="filesUploaded" multiple (change)="addFile($event)">
+
+                    <!-- <input #file type="file" class="form-control" id="file" name="filesUploaded" multiple (change)="addFile($event)"> -->
                     <!--  (change)="getUploadedFile($event)">  -->
 
 

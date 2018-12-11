@@ -16,6 +16,7 @@ import { IngredientModule } from '../ingredient/ingredient.module';
 import { IngredientFormComponent } from '../ingredient/ingredient-form/ingredient-form.component';
 import { PizzaDetailComponent } from './pizza-detail/pizza-detail.component';
 import { FileDropModule } from 'ngx-file-drop';
+import { UploadFilesComponent } from '../shared/components/upload-files/upload-files.component';
 
 @NgModule({
   imports: [
@@ -36,6 +37,7 @@ import { FileDropModule } from 'ngx-file-drop';
     PizzaListComponent,
     AddIngredientModalComponent,
     PizzaDetailComponent,
+    UploadFilesComponent,
     // IngredientFormComponent
   ],
   providers: [

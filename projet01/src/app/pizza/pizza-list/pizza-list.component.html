@@ -110,7 +110,7 @@
   
               <input #selectpizza class="custom-control-input" [id]="pizza._id" [value]="pizza._id"
                 type="checkbox" (change)="onCheckboxChange(selectpizza, pizza)" [checked]="tryToCheck(pizza)">
-              <label class="custom-control-label" [for]="pizza.id">
+              <label class="custom-control-label" [for]="pizza._id">
                 <span class="sr-only">Cocher la ligne</span>
               </label>
   
@@ -197,9 +197,13 @@
     </div>
     <div class="modal-body">
       <!-- <app-pizza-details [messageId]="modalMessage.id"></app-pizza-details> -->
-      <div *ngFor="let image of modalPizza.img">
-        <img src="../../../../../uploads/{{image}}" />
+      <div ></div>
+      <div style="display: inline-flex; margin: 15px">
+        <div *ngFor="let image of images" style="margin: 15px">
+          <img *ngIf="!isImageLoading; else imageLoader" style="height: 70px; width: 70px; display: block;" [src]="image" alt="Place image title">
+        </div>
       </div>
+      <br />
       {{modalPizza | json}}
     </div>
     <div class="modal-footer">
@@ -229,6 +233,8 @@
       <button type="button" class="btn btn-secondary" (click)="close()">Annuler</button>
     </div>
   </ng-template>
+
+  <ng-template #imageLoader><div style="height: 70px; width: 70px; display: block;" class="lds-dual-ring"></div></ng-template>
   <!-- 
   <ng-template #deleteBulkModal let-c="close" let-d="dismiss">
     <div class="modal-header">
