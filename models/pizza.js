@@ -23,10 +23,10 @@ const mongoose = require('mongoose'),
         description: { type: String, required: true },
         created_at: { type: Date, default: Date.now },
         updated_at: { type: Date },
-        img: { type: String },
+        img: { type: Array },
         long: { type: String },
         lat: { type: String },
-        ingredients: [{ type: Schema.Types.Mixed, ref: 'Ingredient' }]
+        ingredients: [{ type: Schema.Types.Mixed, ref: 'Ingredients' }]
     });
 
 const Pizza = mongoose.model('Pizza', pizzaSchema);

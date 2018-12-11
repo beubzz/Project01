@@ -1,7 +1,198 @@
-
-  <div *ngFor="let ingredient of ingredients">
-    {{ ingredient.name }}
-    {{ ingredient.img }}
-    {{ ingredient.weight }}
-    {{ ingredient.price }}
+<div class="actions-on-table text-right on-selection d-flex" *ngIf="checkedIngredient && checkedIngredient?.length > 0">
+    <div class="text-white font-md p-2 d-inline-block mr-auto">
+      <span class="font-weight-bold">{{ checkedIngredient?.length }}</span>
+      item(s) séléctionné(s)
+    </div>
+    <button class="btn btn-actions-on-table btn-primary" type="button"> <!-- (click)="bulkStatusToggleMessage()" [disabled]="!isDeactive"> -->
+      Activer
+    </button>
+    <button class="btn btn-actions-on-table btn-primary" type="button"> <!-- (click)="bulkStatusToggleMessage()" [disabled]="!isActive"> -->
+      Désactiver
+    </button>
+    <button class="btn btn-actions-on-table btn-primary" type="button"> <!-- (click)="open(deleteBulkModal, 'lg', null)"> -->
+      Supprimer
+    </button>
   </div>
+  
+  <table class="table table-bordered table-striped table-hover table-full-width mb-3">
+    <thead>
+      <tr>
+        <th class="pl-3" width="30">
+          <div class="custom-control custom-checkbox">
+            <input #selectPizza class="custom-control-input" type="checkbox" (change)="checkAll()" [checked]="isChecked"
+              id="checkall">
+            <label class="custom-control-label" for="checkall">
+              <span class="sr-only">Tout cocher</span>
+            </label>
+          </div>
+        </th>
+        <th class="p-0">
+          <button class="sorting-btn btn btn-link btn-block text-color text-left font-weight-bold" (click)="setSortProperty(GetNamedProperty(pizzaFilter, 'name'))">
+            Nom
+            <span class="sorting-icons"> <!-- [ngClass]="getSortIcon(GetNamedProperty(pizzaFilter, 'name'))"> -->
+              <span class="datatable-icon-up"></span>
+              <span class="datatable-icon-down"></span>
+            </span>
+          </button>
+        </th>
+        <th class="p-0">
+          <button class="sorting-btn btn btn-link btn-block text-color text-left font-weight-bold" (click)="setSortProperty(GetNamedProperty(pizzaFilter, 'description'))">
+            description
+            <span class="sorting-icons"> <!--  [ngClass]="getSortIcon(GetNamedProperty(pizzaFilter, 'description'))"> -->
+              <span class="datatable-icon-up"></span>
+              <span class="datatable-icon-down"></span>
+            </span>
+          </button>
+        </th>
+        <th class="p-0">
+          <button class="sorting-btn btn btn-link btn-block text-color text-left font-weight-bold" (click)="setSortProperty(GetNamedProperty(pizzaFilter, 'img'))">
+            img
+            <span class="sorting-icons"> <!--  [ngClass]="getSortIcon(GetNamedProperty(pizzaFilter, 'img'))"> -->
+              <span class="datatable-icon-up"></span>
+              <span class="datatable-icon-down"></span>
+            </span>
+          </button>
+        </th>
+        <th class="p-0">
+          <button class="sorting-btn btn btn-link btn-block text-color text-left font-weight-bold" (click)="setSortProperty(GetNamedProperty(pizzaFilter, 'ingredients'))">
+            Poid | prix
+            <span class="sorting-icons"> <!--  [ngClass]="getSortIcon(GetNamedProperty(pizzaFilter, 'ingredients'))"> -->
+              <span class="datatable-icon-up"></span>
+              <span class="datatable-icon-down"></span>
+            </span>
+          </button>
+        </th>
+        <th width="50">
+          Actions
+        </th>
+      </tr>
+      <tr class="table-filter">
+        <th class="pl-3">
+          <!-- <div class="custom-control custom-checkbox">
+            <input #selectpizza class="custom-control-input"
+              type="checkbox" (change)="checkAll()" [checked]="isChecked" id="checkall">
+            <label class="custom-control-label" for="checkall">
+              <span class="sr-only">Tout cocher</span>
+            </label>
+          </div> -->
+        </th>
+        <th class="p-0">
+          <!--
+          <div class="input-group">
+            <input #filterName (keyup)="setFilterProperty(pizzaFilter, 'name', filterName.value)"
+              type="text" name="filterName" id="filterName" class="form-control" placeholder="Filtrer sur..." [ngClass]="pizzaFilter.name ? 'filtering' : '' ">
+            <div class="input-group-append">
+              <button class="btn btn-secondary border-0" type="button" id="button-addon2" (click)="setFilterProperty(pizzaFilter, 'name', '');">x</button>
+            </div>
+          </div>
+          -->
+        </th>
+        <th class="p-0"></th>
+        <th class="p-0"></th>
+        <th class="p-0"></th>
+        <th class="p-0"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-container *ngFor="let ingredient of ingredients">
+        <tr [attr.data-id]="ingredient.id"> <!--  [ngClass]="getStatutClass(pizza)"> -->
+          <td class="pl-3">
+            <div class="custom-control custom-checkbox">
+  
+              <input #selectingredient class="custom-control-input" [id]="ingredient._id" [value]="ingredient._id"
+                type="checkbox" (change)="onCheckboxChange(selectingredient, ingredient)" [checked]="tryToCheck(ingredient)">
+              <label class="custom-control-label" [for]="ingredient.id">
+                <span class="sr-only">Cocher la ligne</span>
+              </label>
+  
+            </div>
+          </td>
+          <td data-title="name" (click)="open(ingredientModal, 'lg', ingredient)" class="text-primary text-hover-underline pointer">{{ingredient.name}}</td>
+          
+          <td data-title="description" (click)="open(ingredientModal, 'lg', ingredient)" class="text-primary text-hover-underline pointer">{{ingredient.description}}</td>
+          <td data-title="img" (click)="open(ingredientModal, 'lg', ingredient)" class="text-primary text-hover-underline pointer">{{ingredient.img}}</td>
+          <td data-title="ingredients" (click)="open(ingredientModal, 'lg', ingredient)" class="text-primary text-hover-underline pointer">
+            {{ ingredient.weight }} | {{ ingredient.price }}
+          </td>
+          <td class="p-0">
+            <div ngbDropdown class="text-center" placement="bottom-right">
+              <button class="btn btn-link btn-icon-icon dropdown-nocaret" id="actions" ngbDropdownToggle>
+                <span class="btn-icon-img optyweb cw-nav-small-menu" title="Menu d'actions" aria-hidden="true"></span>
+                <span class="sr-only">Menu d'actions</span>
+              </button>
+              <ul ngbDropdownMenu aria-labelledby="actions" class="p-0">
+                <li class="dropdown-item p-0">
+                  <button type="button" class="btn btn-link btn-block text-left text-color px-2 py-1" [routerLink]="['/ingredient/edit', ingredient._id]"
+                    >Modifier</button>
+                </li>
+                <li class="dropdown-item p-0" *ngIf="ingredient.status === 'Cancelled'">
+                  <button type="button" class="btn btn-link btn-block text-left text-color px-2 py-1" (click)="activate(ingredient)">Activer</button>
+                </li>
+                <li class="dropdown-item p-0" *ngIf="ingredient.status === 'Active'">
+                  <button type="button" class="btn btn-link btn-block text-left text-color px-2 py-1" (click)="deactivate(ingredient)">Désactiver</button>
+                </li>
+                <li class="dropdown-item p-0">
+                  <button type="button" class="btn btn-link btn-block text-left text-danger px-2 py-1" (click)="open(deleteModal, 'lg', ingredient)">Supprimer</button>
+                </li>
+              </ul>
+            </div>
+          </td>
+        </tr>
+      </ng-container>
+      <!--
+        <ng-container *ngIf="paginedResult && paginedResult.result?.length <= 0">
+        <tr>
+          <td class="p-0" colspan="16">
+            <div class="alert alert-info m-0">Aucun résultat</div>
+          </td>
+        </tr>
+      </ng-container>
+      -->
+    </tbody>
+  </table>
+
+  <!-- 
+  <app-xpagination *ngIf="paginedResult && paginedResult?.pagination.PageCount >= 0" [pagination]="paginedResult?.pagination"
+    [pagesToShow]="pageToShow" (goPage)="goToPage($event)" (goNext)="onNext()" (goPrev)="onPrev()" (nbResultChange)="onNbResultChange($event)">
+  </app-xpagination>
+  -->
+
+  
+  <ng-template #ingredientModal let-c="close" let-d="dismiss">
+    <div class="modal-header">
+      <h1 class="modal-title">{{modalIngredient.name}}</h1>
+      <button type="button" class="close" aria-label="Fermer" (click)="close()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <!-- <app-message-details [messageId]="modalMessage.id"></app-message-details> -->
+      {{modalIngredient | json}}
+    </div>
+    <div class="modal-footer">
+      <!-- <button class="btn btn-primary" type="button" [routerLink]="['/simulation/messages/edit', modalMessage.id]" (click)="modalRef.dismiss()"
+        [disabled]="modalMessage.status === messageStatus.Active || modalMessage.scope !== messageScope.in" [title]="modalMessage.status === messageStatus.Active ? 'Le signal ne peut être modifié que s\'il est au préalable désactivé et s\'il est intégralement dans l\'import en cours.' : 'Modifier'">
+        Modifier
+      </button> -->
+      <button class="btn btn-secondary" (click)="close()">
+        Fermer
+      </button>
+    </div>
+  </ng-template>
+
+
+<ng-template #deleteModal let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h1 class="modal-title">{{modalIngredient.name}}</h1>
+    <button type="button" class="close" aria-label="Fermer" (click)="close()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div>Êtes vous certain de vouloir supprimer cette pizza ?</div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-danger" (click)="delete(modalIngredient._id)">Supprimer</button>
+    <button type="button" class="btn btn-secondary" (click)="close()">Annuler</button>
+  </div>
+</ng-template>

@@ -16,8 +16,8 @@ const routes: Routes = [
         component: PizzaFormComponent
     },
     {
-        path: 'test',
-        component: AddIngredientModalComponent
+        path: 'edit/:id',
+        component: PizzaFormComponent
     },
 ];
 

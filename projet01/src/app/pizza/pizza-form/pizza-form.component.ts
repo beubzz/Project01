@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { PizzaService } from '../services/pizza.service';
 import { Pizza } from '../models/pizza.model';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
@@ -7,8 +7,9 @@ import { Router } from '@angular/router';
 import { Observable, Subject, merge, concat, of } from 'rxjs';
 import { Ingredient } from 'src/app/ingredient/models/ingredient';
 import { IngredientService } from 'src/app/ingredient/services/ingredient.service';
-import { map, distinctUntilChanged, debounceTime, startWith, delay, filter, tap, switchMap, catchError } from 'rxjs/operators';
-import { NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
+import { distinctUntilChanged, debounceTime, startWith, delay, filter, tap, switchMap, catchError } from 'rxjs/operators';
+import { UploadEvent, FileSystemFileEntry } from 'ngx-file-drop';
+import { HttpHeaders } from '@angular/common/http';
 
 @Component({
   selector: 'app-pizza-form',
@@ -16,6 +17,7 @@ import { NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
   styleUrls: ['./pizza-form.component.css']
 })
 export class PizzaFormComponent implements OnInit {
+  @ViewChild('file') file: ElementRef;
 
   public pizzaForm: FormGroup;
   public submitted: boolean = false;
@@ -27,6 +29,8 @@ export class PizzaFormComponent implements OnInit {
   public term: string;
   public isLoading: boolean;
   public ingredientArray: Array<Ingredient>;
+  public editMode: boolean;
+  public filesToUpload: Array<File>;
   
   constructor(
     private formBuilder: FormBuilder,
@@ -39,6 +43,7 @@ export class PizzaFormComponent implements OnInit {
     this.pizza = new Pizza();
     this.ingredientsInput$ = new Subject<string>();
     this.ingredientArray = new Array();
+    this.editMode = false;
   }
 
   ngOnInit() {
@@ -52,6 +57,10 @@ export class PizzaFormComponent implements OnInit {
     });
 
     this.term = '';
+
+    if (this.router.url.includes("edit")) {
+      this.editMode = true;
+    }
 
     this.ingredients$ = concat(
       of(new Array<Ingredient>()),
@@ -74,50 +83,98 @@ export class PizzaFormComponent implements OnInit {
       )
     );
 
+    if (this.editMode) {
+      const _id = this.router.url.split('/')[3];
+      // console.log(_id);
+
+      this.pizzaService.getPizza(_id).subscribe(res => {
+        this.pizza = res;
+        this.pizzaForm.controls.name.setValue(this.pizza.name);
+        this.pizzaForm.controls.img.setValue(this.pizza.img);
+        this.pizzaForm.controls.description.setValue(this.pizza.description);
+        this.pizzaForm.controls.lat.setValue(this.pizza.lat);
+        this.pizzaForm.controls.long.setValue(this.pizza.long);
+        this.pizzaForm.controls.ingredients.setValue(this.pizza.ingredients);
+      })
+    }
   }
+
+  /*public getUploadedFile(files: Array<File>) {
+    console.log('ca marche !!', files);
+    this.pizzaForm.controls.img.setValue(files);
+  }*/
 
   // convenience getter for easy access to form fields
   public get f() {
     return this.pizzaForm.controls;
   }
 
-  onSubmit() {
-      this.submitted = true;
+  public getAddedFiles(files: Array<File>) {
+    const imgArray = new Array();
 
-      // console.log(this.pizzaForm);
+    for (const file of files) {
+      imgArray.push(file.name);
+    }
 
-      // stop here if form is invalid
-      if (this.pizzaForm.invalid) {
-        this.toastr.error('Le formulaire n\' a pas été rempli correctement', 'error');
-        return;
-      } else {
-        this.pizza.name = this.pizzaForm.value.name;
-        this.pizza.img = this.pizzaForm.value.img;
-        this.pizza.description = this.pizzaForm.value.description;
-        this.pizza.lat = this.pizzaForm.value.lat;
-        this.pizza.long = this.pizzaForm.value.long;
-        
-        console.log(this.pizzaForm.value.ingredients);
+    this.pizzaForm.controls.img.setValue(imgArray);
+    this.filesToUpload = files;
+  }
 
-        // met en place uniquement les object id ...
-        this.pizza.ingredients = this.pizzaForm.value.ingredients;
+  public onSubmit() {
+    this.submitted = true;
 
-        // console.log(this.pizzaForm.value.ingredients);
-        // console.log(this.ingredientArray);
-        // this.pizza.ingredients = this.ingredientArray ? this.ingredientArray : [];
-        this.pizza.createdAt = '';
-        console.log('ici', this.pizza);
+    // stop here if form is invalid
+    if (this.pizzaForm.invalid) {
+      this.toastr.error('Le formulaire n\' a pas été rempli correctement', 'error');
+      return;
+    } else {
+      this.pizza.name = this.pizzaForm.value.name;
+      this.pizza.img = this.pizzaForm.value.img;
+      this.pizza.description = this.pizzaForm.value.description;
+      this.pizza.lat = this.pizzaForm.value.lat;
+      this.pizza.long = this.pizzaForm.value.long;
+      this.pizza.ingredients = this.pizzaForm.value.ingredients;
+      this.pizza.createdAt = '';
 
-        this.pizzaService.addPizza(this.pizza)
+      if (this.editMode) {
+        this.pizzaService.updatePizza(this.pizza)
         .subscribe(
           data  => { 
-            console.log(data);
+            // console.log(data);
+            this.toastr.success(`Pizza : ${data.name} modifié !`, 'Congrat');
+            this.router.navigate(['pizza']);
+          },
+          error => console.log(error) // Observable.throw(error)  
+        );
+      } else {
+
+        const formData = new FormData();
+
+        for (let img of this.filesToUpload) {
+          formData.append(img.name, img, img.name);
+        }
+
+        formData.append('content', JSON.stringify(this.pizza));
+
+        this.pizzaService.addPizza(formData)
+        .subscribe(
+          data  => {
+            // data = pizza Added
+            // console.log(data);
             this.toastr.success('Pizza ajouté !', 'Congrat');
             this.router.navigate(['pizza']);
           },
-          error => Observable.throw(error)  
+          error => console.log(error)
         );
-
       }
+    }
+  }
+
+  public fileOver(event){
+    console.log(event);
+  }
+ 
+  public fileLeave(event){
+    console.log(event);
   }
 }

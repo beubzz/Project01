@@ -1,8 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-
 const app = express();
+
 const config = require('./db');
 const pizzaController = require('./controllers/pizzaController');
 const ingredientController = require('./controllers/ingredientController');
@@ -18,13 +18,21 @@ app.use(bodyParser.json());
 
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  next();
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Authorization, Content-Length, Content-Type, Accept");
+  res.header('Access-Control-Allow-Methods', 'GET,POST,DELETE');
+  
+  // intercept OPTIONS method
+  if ('OPTIONS' === req.method) {
+    res.status(200).end();  // For OPTIONS requests, a 200 response is sent immediately
+  } else {
+    next();  // Continues normal workflow
+  }
+  
+  // next();
 });
 
 app.use('/ingredient', ingredientController);
 app.use('/pizza', pizzaController);
-
 
 app.listen(PORT, function(){
     console.log('Your node js server is running on PORT:',PORT);
