@@ -175,56 +175,6 @@ function postPizza(req, res, next) {
     })
 }
 
-/**
- * Post new Pizza
- *
- * @function postPizza
- * @memberof PizzaController
- * @param {Object} req - Request object.
- * @param {string} req.params.id - Pizza's ID to find.
- * @param {string} req.query.name - Pizza's name to query.
- * @param {string} req.query.description - Pizza's description to query.
- * @param {string} req.query.price - Pizza's price to query.
- * @param {string} req.query.img - Pizza's image to query.
- * @param {Object} res - Response object.
- * @returns {Promise.<void>} Call res.status() with a status code to say what happens and res.json() to send data if there is any.
- */
-function upload(req, res, next) {
-
-    const pizza = new Pizza(req.body);
-    // console.log(pizza);
-
-    console.log(req.files);
-    console.log(req.body);
-
-    var form = new IncomingForm();
-
-    form.on('file', (field, file) => {
-        // Do something with the file
-        // e.g. save it to the database
-        // you can access it using file.path
-    });
-    form.on('end', () => {
-        res.json();
-    });
-    form.parse(req);
-
-
-    pizza.save((err, pizza) => {
-        if (err) {
-            // console.log(err);
-            res.status(500).send(err);
-        } else {
-            res.status(200).send(pizza);
-            // SOCKET
-            // global.io.emit('[Pizza][post]', pizza);
-            // global.io.emit('[Toast][new]', { type: 'success', title: `Nouvelle Pizza`, message: 'Une nouvelle pizza a été ajoutée !' });
-        }
-
-    });
-
-}
-
 
 /**
  * Update Pizza in POST not PUT
@@ -244,18 +194,50 @@ function upload(req, res, next) {
  */
 function updatePizza(req, res, next) {
 
-    let pizza = new Pizza(req.body);
-    pizza.updated_at = new Date;
+    // init de notre object qui sera utilisé et renvoyé
+    let pizza = null;
 
-    Pizza.findOneAndUpdate({ _id: req.params.id }, pizza, { new: true }, (err, pizza) => {
-        if (err) {
-            res.status(500).send(err);
-        } else if (pizza === null) {
-            res.status(404).send('Aucun pizza trouvé avec cet Identifiant...');
-        } else {
-            res.status(200).send(pizza);
-        }
+    // init du formulaire d'entré en tant que Formidable Form
+    var form = new formidable.IncomingForm();
+
+    // parse de la request passé
+    form.parse(req);
+
+    // représente un forEach files et nous permet d'uploader les fichier dans le dossier uploads
+    form.on('fileBegin', function (name, file) {
+        file.path = './uploads/' + file.name;
+        // console.log(file.path);
     });
+
+    /*
+    Ne pas supprimer au cas pour une progress bar
+    form.on('fileEnd', function (name, file){
+        // console.log(file);
+        // file.path = './uploads/' + file.name;
+        console.log('------------ c est passé !!! ----------------');
+    });
+    */
+
+    // si il y a bien des champs dans le formulaire (autre que des fichiers)
+    form.on('field', function (field, value) {
+        // initialisation de notre object avec les bonnes valeurs
+        pizza = new Pizza(JSON.parse(value));
+        // Si cet objet est correct :
+        if (pizza) {
+            pizza.updated_at = new Date;
+
+            // on save notre object remplie en base !
+            Pizza.findOneAndUpdate({ _id: pizza._id }, pizza, { new: true }, (err, pizza) => {
+                if (err) {
+                    res.status(500).send(err);
+                } else if (pizza === null) {
+                    res.status(404).send('Aucun pizza trouvé avec cet Identifiant...');
+                } else {
+                    res.status(200).send(pizza);
+                }
+            });
+        }
+    })    
 }
 
 

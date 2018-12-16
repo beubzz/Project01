@@ -160,10 +160,22 @@ export class PizzaFormComponent implements OnInit {
       // mongo remplie ce champs tout seul et automatiquement (updatedAt aussi)
       this.pizza.createdAt = '';
 
-      // Attention ne doit pas uploader les images sans le mode formDAta !!
-      // A VOIR ABSOLUTMENT §!!!
+      // creation de notre formData pour le uploadFIle
+      const formData = new FormData();
+
+      // pour chaque images
+      for (let img of this.filesToUpload) {
+        // on créé un champs dans notre formulaire avec son nom et le fichier
+        formData.append(img.name, img, img.name);
+      }
+
+      // puis on ajoute au champs content l'objet de notre pizza
+      formData.append('content', JSON.stringify(this.pizza));
+
+      // update si mode edition sinon add pizza
       if (this.editMode) {
-        this.pizzaService.updatePizza(this.pizza)
+
+        this.pizzaService.updatePizza(formData, this.pizza._id)
         .subscribe(
           data  => { 
             // console.log(data);
@@ -174,6 +186,7 @@ export class PizzaFormComponent implements OnInit {
         );
       } else {
 
+        /*
         // creation de notre formData pour le uploadFIle
         const formData = new FormData();
 
@@ -185,6 +198,7 @@ export class PizzaFormComponent implements OnInit {
 
         // puis on ajoute au champs content l'objet de notre pizza
         formData.append('content', JSON.stringify(this.pizza));
+        */
 
         // envoie du form complet a notre pizzaService
         this.pizzaService.addPizza(formData)
