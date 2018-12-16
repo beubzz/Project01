@@ -18,7 +18,7 @@
     <button class="btn btn-actions-on-table btn-primary" type="button"> <!-- (click)="bulkStatusToggleMessage()" [disabled]="!isActive"> -->
       Désactiver
     </button>
-    <button class="btn btn-actions-on-table btn-primary" type="button"> <!-- (click)="open(deleteBulkModal, 'lg', null)"> -->
+    <button class="btn btn-actions-on-table btn-primary" type="button" (click)="open(deleteBulkModal, 'lg', null)">
       Supprimer
     </button>
   </div>
@@ -235,24 +235,22 @@
   </ng-template>
 
   <ng-template #imageLoader><div style="height: 70px; width: 70px; display: block;" class="lds-dual-ring"></div></ng-template>
-  <!-- 
+  
   <ng-template #deleteBulkModal let-c="close" let-d="dismiss">
     <div class="modal-header">
-      <h1 class="modal-title">Suppression de plusieurs messages</h1>
+      <h1 class="modal-title">Suppression de plusieurs pizza</h1>
       <button type="button" class="close" aria-label="Fermer" (click)="close()">
         <span aria-hidden="true">&times;</span>
       </button>
     </div>
     <div class="modal-body">
-      <div>Êttes vous certain de vouloir supprimer ces messages ?</div>
+      <div>Êttes vous certain de vouloir supprimer ces pizzas ?</div>
       <ul class="m-0" *ngIf="selectedPizza.length > 0">
-        <li *ngFor="let msg of selectedPizza">{{msg.name}}</li>
+        <li *ngFor="let pizza of selectedPizza">{{pizza.name}}</li>
       </ul>
     </div>
     <div class="modal-footer">
-      <button type="button" class="btn btn-danger" (click)="bulkMessageDelete()">Supprimer</button>
+      <button type="button" class="btn btn-danger" (click)="bulkPizzaDelete()">Supprimer</button>
       <button type="button" class="btn btn-secondary" (click)="close()">Annuler</button>
     </div>
   </ng-template>
-  
-  -->

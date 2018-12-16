@@ -36,8 +36,7 @@ export class PizzaService {
 
   // CHANGER LE TYPE ANY POUR TOUT LES HTTPOPTIONS !!!
   public addPizza(pizza: any, httpOptions: any = null): Observable<any> {
-    // return this.http.post<Pizza>(this.pizzasUrl, pizza, this.httpOptions);
-    console.log(pizza);
+    // console.log(pizza);
     return this.http.post(this.pizzasUrl, pizza);
   }
 

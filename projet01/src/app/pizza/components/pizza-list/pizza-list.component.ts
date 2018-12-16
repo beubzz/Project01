@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { Pizza } from '../models/pizza.model';
-import { PizzaService } from '../services/pizza.service';
+import { Pizza } from '../../models/pizza.model';
+import { PizzaService } from '../../services/pizza.service';
 import { NgbModalRef, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 
@@ -180,8 +180,10 @@ export class PizzaListComponent implements OnInit {
    */
   public open(content, size: string = 'lg', pizza: Pizza) {
     // console.log(this.imgSource.nativeElement);
-    this.images = new Array();
-    this.getImageFromService(pizza);
+    if (pizza) {
+      this.images = new Array();
+      this.getImageFromService(pizza);
+    }
 
     this.modalRef = this.modalService.open(content, {
       size: size === 'lg' ? 'lg' : 'sm',
@@ -229,9 +231,14 @@ export class PizzaListComponent implements OnInit {
 
 
 
+  public bulkPizzaDelete() {
+    for (const pizza of this.checkedPizza) {
+      this.delete(pizza._id);
+    }
+  }
 
   public delete(pizzaId: string) {
-    console.log(pizzaId);
+    // console.log(pizzaId);
 
     this.pizzaService.deletePizza(pizzaId).subscribe(
       data => {
