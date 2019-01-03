@@ -36,8 +36,7 @@ export class PizzaService {
 
   // CHANGER LE TYPE ANY POUR TOUT LES HTTPOPTIONS !!!
   public addPizza(pizza: any, httpOptions: any = null): Observable<any> {
-    // return this.http.post<Pizza>(this.pizzasUrl, pizza, this.httpOptions);
-    console.log(pizza);
+    // console.log(pizza);
     return this.http.post(this.pizzasUrl, pizza);
   }
 
@@ -48,10 +47,10 @@ export class PizzaService {
     return this.http.delete<Pizza>(url, this.httpOptions);
   }
 
-  public updatePizza(pizza: Pizza, httpOptions: any = null): Observable<any> {
-    const url = `${this.pizzasUrl}/${pizza._id}`;
+  public updatePizza(pizza: any, _id: string, httpOptions: any = null): Observable<any> {
+    const url = `${this.pizzasUrl}/${_id}`;
     
-    return this.http.post(url, pizza, this.httpOptions);
+    return this.http.post(url, pizza);// , this.httpOptions);
   }
 
   public getImage(imageName: string): Observable<Blob> {

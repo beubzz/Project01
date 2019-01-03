@@ -1,7 +1,7 @@
 import { NgModule, ModuleWithProviders } from '@angular/core';
 import { RouterModule, Routes, ExtraOptions, PreloadAllModules } from '@angular/router';
 
-import { PizzaListComponent } from './pizza/pizza-list/pizza-list.component';
+import { PizzaListComponent } from './pizza/components/pizza-list/pizza-list.component';
 import { IngredientListComponent } from './ingredient/ingredient-list/ingredient-list.component';
 import { CommonModule } from '@angular/common';
 import { IngredientModule } from './ingredient/ingredient.module';

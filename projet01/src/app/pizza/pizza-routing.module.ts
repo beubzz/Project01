@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { PizzaListComponent } from './pizza-list/pizza-list.component';
-import { PizzaFormComponent } from './pizza-form/pizza-form.component';
-import { AddIngredientModalComponent } from './add-ingredient-modal/add-ingredient-modal.component';
+import { PizzaListComponent } from './components/pizza-list/pizza-list.component';
+import { PizzaFormComponent } from './components/pizza-form/pizza-form.component';
+import { AddIngredientModalComponent } from './components/add-ingredient-modal/add-ingredient-modal.component';
 // import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 
 
