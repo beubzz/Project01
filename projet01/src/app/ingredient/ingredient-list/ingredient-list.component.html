@@ -1,4 +1,12 @@
-<div class="actions-on-table text-right on-selection d-flex" *ngIf="checkedIngredient && checkedIngredient?.length > 0">
+<div style="padding: 40px" class="card">
+  <div class="actions-on-table d-flex">
+    <button class="btn btn-actions-on-table btn-primary ml-auto" type="button" [routerLink]="['add']"
+      routerLinkActive="router-link-active">
+      Ajouter
+    </button>
+  </div>
+
+  <div class="actions-on-table text-right on-selection d-flex" *ngIf="checkedIngredient && checkedIngredient?.length > 0">
     <div class="text-white font-md p-2 d-inline-block mr-auto">
       <span class="font-weight-bold">{{ checkedIngredient?.length }}</span>
       item(s) séléctionné(s)

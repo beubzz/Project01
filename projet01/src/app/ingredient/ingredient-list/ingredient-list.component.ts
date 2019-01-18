@@ -35,7 +35,8 @@ export class IngredientListComponent implements OnInit {
 
   public loadData() {
     this.ingredientService.getIngredients().subscribe(res => {
-      this.ingredients = res;
+      this.ingredients = res.reverse();
+
     })
   }
 
