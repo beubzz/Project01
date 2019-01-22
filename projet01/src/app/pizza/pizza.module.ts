@@ -17,6 +17,7 @@ import { IngredientFormComponent } from '../ingredient/ingredient-form/ingredien
 import { PizzaDetailComponent } from './components/pizza-detail/pizza-detail.component';
 import { FileDropModule } from 'ngx-file-drop';
 import { UploadFilesComponent } from '../shared/components/upload-files/upload-files.component';
+import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
   imports: [
@@ -30,14 +31,13 @@ import { UploadFilesComponent } from '../shared/components/upload-files/upload-f
     ReactiveFormsModule,
     MatAutocompleteModule,
     IngredientModule,
-    FileDropModule
+    SharedModule
   ],
   declarations: [
     PizzaFormComponent,
     PizzaListComponent,
     AddIngredientModalComponent,
-    PizzaDetailComponent,
-    UploadFilesComponent,
+    PizzaDetailComponent
     // IngredientFormComponent
   ],
   providers: [

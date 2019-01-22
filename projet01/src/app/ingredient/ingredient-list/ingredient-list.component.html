@@ -109,7 +109,7 @@
   
               <input #selectingredient class="custom-control-input" [id]="ingredient._id" [value]="ingredient._id"
                 type="checkbox" (change)="onCheckboxChange(selectingredient, ingredient)" [checked]="tryToCheck(ingredient)">
-              <label class="custom-control-label" [for]="ingredient.id">
+              <label class="custom-control-label" [for]="ingredient._id">
                 <span class="sr-only">Cocher la ligne</span>
               </label>
   

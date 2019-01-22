@@ -35,14 +35,21 @@
       blablabalbalabalab
     </div> -->
     <div class="bg-white border-bottom px-3 py-3" style="position: sticky; position: -webkit-sticky; top: 64px; z-index: 10000">
-      <h1>{{heading}}</h1>
       <nav aria-label="breadcrumb">
-          <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="#">Accueil</a></li>
-            <li class="breadcrumb-item active" aria-current="page">{{heading}}</li>
-          </ol>
+          <ol class="breadcrumb align-items-center">
+              <li class="breadcrumb-item font-xs"><a href="#">Accueil</a></li>
+              <li *ngIf="parent; then multiParent" class="breadcrumb-item active font-xs" [routerLink]="[parentLink]">{{parentTitle}}</li>
+              <li aria-current="page" class="breadcrumb-item active navbar-heading">{{heading}}</li>
+            </ol>
         </nav>
     </div>
+
+    <ng-template #multiParent>
+      <li *ngFor="let title of parent.title; let i = index" class="breadcrumb-item active font-xs">
+        <a href="#" [routerLink]="[parent.link[i]]">{{title}}</a>
+      </li>
+    </ng-template>
+
     <div class="main-content" >
       <router-outlet></router-outlet>
       <!-- <app-footer></app-footer> -->

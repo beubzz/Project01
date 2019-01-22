@@ -4,7 +4,7 @@ export class Ingredient {
   }
     _id: string;
     name: string;
-    img: File;
+    img: Array<string>;;
     description: string;
     price: string;
     weight: string;

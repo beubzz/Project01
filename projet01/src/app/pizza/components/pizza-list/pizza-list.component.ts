@@ -22,7 +22,6 @@ export class PizzaListComponent implements OnInit {
   public modalPizza: Pizza;
 
   public images: Array<any>;
-  public test: boolean;
 
   // imageToShow: any;
   public isImageLoading: boolean;
@@ -33,8 +32,6 @@ export class PizzaListComponent implements OnInit {
     private toastr: ToastrService,
   ) {
     this.checkedPizza = new Array();
-    this.test = false;
-    // this.images = new Array();
   }
 
   ngOnInit() {

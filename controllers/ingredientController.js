@@ -8,7 +8,7 @@ const express = require('express');
 const router = express.Router();
 const Ingredient = require('../models/ingredient');
 var formidable = require('formidable');
-var fs = require('fs');
+
 // ************************************************************************** //
 //                                ROUTES                                      //
 // ************************************************************************** //
@@ -32,15 +32,28 @@ router.post('/:id', (req, res, next) => {
     updateIngredient(req, res, next);
 });
 
-// plus utilisé ! function PUT un peu obsoléte !
-/*
-router.put('/:id', (req, res, next) => {
-    updateIngredient(req, res, next);
-});
-*/
-
 router.delete('/:id', (req, res, next) => {
   deleteIngredient(req, res, next);
+});
+
+router.get('/img/:name', function (req, res, next) {
+
+    var options = {
+        root: './uploads/',
+        headers: {
+            'Content-Type': 'image/png, image/PNG, image/jpg, image/JPG'
+        }
+    };
+
+    var fileName = req.params.name;
+    res.sendFile(fileName, options, function (err) {
+        if (err) {
+            next(err);
+        } else {
+            console.log('Sent:', fileName);
+        }
+    });
+
 });
 
 
@@ -138,31 +151,54 @@ function getIngredientById(req, res, next){
  * @returns {Promise.<void>} Call res.status() with a status code to say what happens and res.json() to send data if there is any.
  */
 function postIngredient(req, res, next){
-    
-    const ingredient = new Ingredient(req.body);
 
-    /*var form = new formidable.IncomingForm();
-    form.parse(req, function (err, fields, files) {
-        console.log(files);
-        var oldpath = files.filetoupload.path;
-        var newpath = 'D:/projet01File/uploadFiles' + files.filetoupload.name;
-        fs.rename(oldpath, newpath, function (err) {
-            if (err) throw err;
-            res.write('File uploaded and moved!');
-            res.end();
-        });
-    });*/
-    console.log(ingredient);
+    // init de notre object qui sera utilisé et renvoyé
+    let ingredient = null;
 
-    // console.log(ingredient);
-    ingredient.save((err, ingredient) => {
-        if (err) {
-            // console.log(err);
-            res.status(500).send(err);
-        }
-        res.status(200).send(ingredient);
+    // init du formulaire d'entré en tant que Formidable Form
+    var form = new formidable.IncomingForm();
+
+    // parse de la request passé
+    form.parse(req);
+
+    // représente un forEach files et nous permet d'uploader les fichier dans le dossier uploads
+    form.on('fileBegin', function (name, file) {
+        file.path = './uploads/' + file.name;
+        // console.log(file.path);
     });
+
+    /*
+    Ne pas supprimer au cas pour une progress bar
+    form.on('fileEnd', function (name, file){
+        // console.log(file);
+        // file.path = './uploads/' + file.name;
+        console.log('------------ c est passé !!! ----------------');
+    });
+    */
+
+    // si il y a bien des champs dans le formulaire (autre que des fichiers)
+    form.on('field', function (field, value) {
+        // initialisation de notre object avec les bonnes valeurs
+        ingredient = new Ingredient(JSON.parse(value));
+        // Si cet objet est correct :
+        if (ingredient) {
+            // on save notre object remplie en base !
+            ingredient.save((err, piz) => {
+                if (err) {
+                    // console.log(err);
+                    res.status(500).send(err);
+                } else {
+                    // console.log(piz);
+                    res.status(200).send(piz);
+                    // SOCKET
+                    // global.io.emit('[ingredient][post]', ingredient);
+                    // global.io.emit('[Toast][new]', { type: 'success', title: `Nouvelle ingredient`, message: 'Une nouvelle ingredient a été ajoutée !' });
+                }
+            });
+        }
+    })
 }
+
 
 /**
  * Update Ingredient in POST not PUT
@@ -182,18 +218,41 @@ function postIngredient(req, res, next){
  */
 function updateIngredient(req, res, next){
     
-    let ingredient = new Ingredient(req.body);
-    ingredient.updated_at = new Date;
+    // init de notre object qui sera utilisé et renvoyé
+    let ingredient = null;
 
-    Ingredient.findOneAndUpdate({_id: req.params.id}, ingredient, { new: true }, (err, ingredient) => {
-        if (err) {
-            res.status(500).send(err);
-        } else if (ingredient === null) {
-            res.status(404).send('Aucun ingredient trouvé avec cet Identifiant...');
-        } else {
-            res.status(200).send(ingredient);
-        }
+    // init du formulaire d'entré en tant que Formidable Form
+    var form = new formidable.IncomingForm();
+
+    // parse de la request passé
+    form.parse(req);
+
+    // représente un forEach files et nous permet d'uploader les fichier dans le dossier uploads
+    form.on('fileBegin', function (name, file) {
+        file.path = './uploads/' + file.name;
+        // console.log(file.path);
     });
+
+    // si il y a bien des champs dans le formulaire (autre que des fichiers)
+    form.on('field', function (field, value) {
+        // initialisation de notre object avec les bonnes valeurs
+        ingredient = new Ingredient(JSON.parse(value));
+        // Si cet objet est correct :
+        if (ingredient) {
+            ingredient.updated_at = new Date;
+
+            // on save notre object remplie en base !
+            Ingredient.findOneAndUpdate({ _id: ingredient._id }, ingredient, { new: true }, (err, ingredient) => {
+                if (err) {
+                    res.status(500).send(err);
+                } else if (ingredient === null) {
+                    res.status(404).send('Aucun ingredient trouvé avec cet Identifiant...');
+                } else {
+                    res.status(200).send(ingredient);
+                }
+            });
+        }
+    })  
 }
 
 /**

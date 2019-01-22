@@ -16,13 +16,16 @@ import { AppRoutingModule } from './app-routing.module';
 import { ToastrModule } from 'ngx-toastr';
 import { FileDropModule } from 'ngx-file-drop';
 import { CommonModule } from '@angular/common';
+import { UploadFilesComponent } from './shared/components/upload-files/upload-files.component';
+import { SharedModule } from './shared/shared.module';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
     MyNavComponent,
-    MyDashboardComponent,
+    MyDashboardComponent
+    // UploadFilesComponent
     // UploadModule
   ],
   imports: [

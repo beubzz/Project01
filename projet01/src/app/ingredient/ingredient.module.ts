@@ -10,6 +10,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
 import { IngredientDetailComponent } from './ingredient-detail/ingredient-detail.component';
+import { FileDropModule } from 'ngx-file-drop';
+import { UploadFilesComponent } from '../shared/components/upload-files/upload-files.component';
+import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
   imports: [
@@ -19,6 +22,7 @@ import { IngredientDetailComponent } from './ingredient-detail/ingredient-detail
     IngredientRoutingModule,
     FormsModule,
     ReactiveFormsModule,
+    SharedModule
   ],
   declarations: [
     IngredientFormComponent,

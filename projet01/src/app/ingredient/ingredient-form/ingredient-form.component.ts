@@ -22,6 +22,8 @@ export class IngredientFormComponent implements OnInit {
   
   public ingredient: Ingredient;
   public editMode: boolean;
+
+  public filesToUpload: Array<File>;
   
   constructor(
     private formBuilder: FormBuilder,
@@ -85,12 +87,26 @@ export class IngredientFormComponent implements OnInit {
         this.ingredient.deleted = false;
         this.ingredient.createdAt = '';
 
+        // creation de notre formData pour le uploadFIle
+        const formData = new FormData();
+
+        // pour chaque images
+        for (let img of this.filesToUpload) {
+          // on créé un champs dans notre formulaire avec son nom et le fichier
+          formData.append(img.name, img, img.name);
+        }
+
+        // puis on ajoute au champs content l'objet de notre ingredient
+        formData.append('content', JSON.stringify(this.ingredient));
+
         if (this.editMode) {
-          this.ingredientService.updateIngredient(this.ingredient)
+
+          this.ingredientService.updateIngredient(formData, this.ingredient._id)
           .subscribe(
             data  => { 
               // console.log(data);
-              this.toastr.success('Ingrédient ajouté !', 'Congrat');
+              this.toastr.success(`Ingredient : ${data.name} modifié !`, 'Congrat');
+              // ferme la modale dans le cas d'un ajout depuis la page PIZZA ADD (donc dans une popup)
               if (this.isFromModal) {
                 this.modalRef.close();
               } else {
@@ -99,11 +115,13 @@ export class IngredientFormComponent implements OnInit {
             }
           );
         } else {
-          this.ingredientService.addIngredient(this.ingredient)
+
+          this.ingredientService.addIngredient(formData)
           .subscribe(
             data  => { 
               // console.log(data);
               this.toastr.success('Ingrédient ajouté !', 'Congrat');
+              // ferme la modale dans le cas d'un ajout depuis la page PIZZA ADD (donc dans une popup)
               if (this.isFromModal) {
                 this.modalRef.close();
               } else {
@@ -114,5 +132,25 @@ export class IngredientFormComponent implements OnInit {
         }
 
       }
+  }
+
+  /**
+   * Fonction de récupération de l'output de l'enfant :
+   * - uploadFile (external - shared components)
+   * @param files: Array<File>
+   */
+  public getAddedFiles(files: Array<File>) {
+    // creation de notre array de nom d'image
+    const imgArray = new Array();
+
+    // pour chaque images on garde son nom dans notre imgArray
+    for (const file of files) {
+      imgArray.push(file.name);
+    }
+
+    // On set la valeur de notre champ images de notre formulaire par la liste des nom d'images
+    this.ingredientForm.controls.img.setValue(imgArray);
+    // On set notre variable gloable a notre Array<File>
+    this.filesToUpload = files;
   }
 }

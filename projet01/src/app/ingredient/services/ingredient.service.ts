@@ -43,8 +43,8 @@ export class IngredientService {
   }
 
   // CHANGER LE TYPE ANY POUR TOUT LES HTTPOPTIONS !!!
-  public addIngredient(ingredient: Ingredient, httpOptions: any = null): Observable<Ingredient> {
-    return this.http.post<Ingredient>(this.ingredientsUrl, ingredient, this.httpOptions);
+  public addIngredient(ingredient: any, httpOptions: any = null): Observable<Ingredient> {
+    return this.http.post<Ingredient>(this.ingredientsUrl, ingredient);
   }
 
   public deleteIngredient(Ingredient: Ingredient | string, httpOptions: any = null): Observable<Ingredient> {
@@ -54,11 +54,17 @@ export class IngredientService {
     return this.http.delete<Ingredient>(url, this.httpOptions);
   }
 
-  public updateIngredient(Ingredient: Ingredient, httpOptions: any = null): Observable<any> {
-    const url = `${this.ingredientsUrl}/${Ingredient._id}`;
+  public updateIngredient(ingredient: any, _id: string, httpOptions: any = null): Observable<any> {
+    const url = `${this.ingredientsUrl}/${ingredient._id}`;
     
-    return this.http.post(url, Ingredient, this.httpOptions);
+    return this.http.post(url, Ingredient);
   }
+
+  public getImage(imageName: string): Observable<Blob> {
+    const protectedUrl = `${this.ingredientsUrl}/img/${imageName}`;
+    return this.http.get(protectedUrl, { responseType: 'blob' });
+  }
+
   /* public updateIngredient(Ingredient: Ingredient, httpOptions: any = null): Observable<any> {
     return this.http.put(this.ingredientsUrl, Ingredient, this.httpOptions);
   }*/

@@ -20,6 +20,10 @@ export class IngredientListComponent implements OnInit {
   public modalRef: NgbModalRef;
   public modalIngredient: Ingredient;
 
+  public images: Array<any>;
+
+  // imageToShow: any;
+  public isImageLoading: boolean;
 
   constructor(
     private ingredientService: IngredientService,
@@ -123,14 +127,14 @@ export class IngredientListComponent implements OnInit {
    * Permet de comparé la liste des elements en fonction des elements séléctionnés.
    * Permet donc de garder les elements selectionné meme si on change de filtre / page etc
    *
-   * @param pizza: Pizza
+   * @param ing: Ingredient
    */
-  public tryToCheck(pizza) {
+  public tryToCheck(ing) {
 
     if (this.ingredients.length <= this.checkedIngredient.length) {
       for (const ingredient of this.ingredients) {
         const index = this.checkedIngredient.findIndex(
-          x => x._id === pizza._id
+          x => x._id === ing._id
         );
         if (index !== -1) {
           this.isChecked = true;
@@ -145,7 +149,7 @@ export class IngredientListComponent implements OnInit {
 
     return (
       this.checkedIngredient &&
-      this.checkedIngredient.findIndex(x => x._id === pizza._id) > -1
+      this.checkedIngredient.findIndex(x => x._id === ing._id) > -1
     );
   }
 
@@ -165,6 +169,12 @@ export class IngredientListComponent implements OnInit {
    * @param ingredient: Ingredient
    */
   public open(content, size: string = 'lg', ingredient: Ingredient) {
+    // console.log(this.imgSource.nativeElement);
+    if (ingredient) {
+      this.images = new Array();
+      this.getImageFromService(ingredient);
+    }
+
     this.modalRef = this.modalService.open(content, {
       size: size === 'lg' ? 'lg' : 'sm',
     });
@@ -192,5 +202,35 @@ export class IngredientListComponent implements OnInit {
     );
 
     this.close();
+  }
+
+  createImageFromBlob(image: Blob) {
+    let reader = new FileReader();
+    reader.addEventListener("load", () => {
+      // this.imageToShow = reader.result;
+      this.images.push(reader.result);
+      // console.log(this.images);
+    }, false);
+
+    if (image) {
+      reader.readAsDataURL(image);
+    }
+  }
+
+  getImageFromService(ingredient: Ingredient) {
+    this.isImageLoading = true;
+    for (let image of ingredient.img) {
+      // console.log(image);
+      this.ingredientService.getImage(image).subscribe(data => {
+        this.createImageFromBlob(data);
+        
+        setTimeout(res => (this.isImageLoading = false), 500);
+
+        // this.isImageLoading = false;
+      }, error => {
+        this.isImageLoading = false;
+        console.log(error);
+      });
+    }
   }
 }

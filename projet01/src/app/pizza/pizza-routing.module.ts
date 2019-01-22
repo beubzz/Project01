@@ -9,15 +9,32 @@ import { AddIngredientModalComponent } from './components/add-ingredient-modal/a
 const routes: Routes = [
     {
         path: '',
-        component: PizzaListComponent
+        component: PizzaListComponent,
+        data: {
+            heading: 'Liste des pizza'
+        }
     },
     {
         path: 'add',
-        component: PizzaFormComponent
+        component: PizzaFormComponent,
+        data: {
+            heading: 'Ajouter une Pizza',
+            parent: {
+                title: [`Liste des pizza`],
+                link: [`/pizza`],
+            },
+        }
     },
     {
         path: 'edit/:id',
-        component: PizzaFormComponent
+        component: PizzaFormComponent,
+        data: {
+            heading: 'Modifier une Pizza',
+            parent: {
+                title: [`liste des pizza`],
+                link: [`/pizza`],
+            },
+        }
     },
 ];
 
