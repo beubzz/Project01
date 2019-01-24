@@ -9,6 +9,7 @@ const express = require('express');
 const router = express.Router();
 const Pizza = require('../models/pizza');
 const formidable = require('formidable');
+const fs = require('fs');
 
 
 // ************************************************************************** //
@@ -139,6 +140,23 @@ function postPizza(req, res, next) {
 
     // représente un forEach files et nous permet d'uploader les fichier dans le dossier uploads
     form.on('fileBegin', function (name, file) {
+        /*fs.readdir('./uploads/', (err, data) => {
+            if (err) throw err;
+            console.log(data);
+            console.log(file.name);
+            data.forEach(element => {
+                if (element == file.name) { // mettre en place une config pour (metre a jours l'image ou ajouter l'image name-x)
+                    var filename = file.name.split(/\.(?=[^\.]+$)/);
+                    console.log(filename);
+                    file.name = filename[0] + '-copie.' + filename[1];
+                    fs.rename(file.path, './uploads/' + file.name);
+                    console.log(file.name);
+                    file.path = './uploads/' + file.name;
+                } else if (element == data[data.length - 1]) {
+                    file.path = './uploads/' + file.name;
+                }
+            });
+        });*/
         file.path = './uploads/' + file.name;
         // console.log(file.path);
     });
@@ -156,8 +174,10 @@ function postPizza(req, res, next) {
     form.on('field', function (field, value) {
         // initialisation de notre object avec les bonnes valeurs
         pizza = new Pizza(JSON.parse(value));
+        // console.log(pizza);
         // Si cet objet est correct :
         if (pizza) {
+            // mettre en place le changement des noms d'images si on faits ca !
             // on save notre object remplie en base !
             pizza.save((err, piz) => {
                 if (err) {
@@ -293,13 +313,31 @@ function putPizza(req, res, next) {
 function deletePizza(req, res, next) {
 
     Pizza.findByIdAndRemove(req.params.id, (err, pizza) => {
+        let mess = `La pizza ${req.params.id} a été correctement supprimée`;
+        let notFoundImg = false;
         if (err) {
             res.status(500).send(err);
         } else if (pizza === null) {
             res.status(404).send('Aucune pizza trouvée avec cet identifiant...');
         } else {
+            pizza.img.forEach(element => {
+                fs.unlink('uploads/' + element, (err) => {
+                    if (err) {
+                        // console.log(err);
+                        notFoundImg = true;
+                        // throw err;
+                    } else {
+                        console.log(element + ' was deleted');
+                    }
+                });
+            });
+
+            if (!notFoundImg) {
+                mess = `La pizza ${req.params.id} a été correctement supprimée, mais le(s) image(s) associée(s) n'existé pas ou plus.`
+            }
+            
             let response = {
-                message: `La pizza ${req.params.id} a été correctement supprimée`,
+                message: mess,
                 pizza: pizza
             };
             res.status(200).send(response);

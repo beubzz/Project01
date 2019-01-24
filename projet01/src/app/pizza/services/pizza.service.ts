@@ -40,7 +40,7 @@ export class PizzaService {
     return this.http.post(this.pizzasUrl, pizza);
   }
 
-  public deletePizza(pizza: Pizza | string, httpOptions: any = null): Observable<Pizza> {
+  public deletePizza(pizza: Pizza | string, httpOptions: any = null): Observable<any> { // changer any en response {message, pizza}
     const id = typeof pizza === 'string' ? pizza : pizza._id;
     const url = `${this.pizzasUrl}/${id}`;
 

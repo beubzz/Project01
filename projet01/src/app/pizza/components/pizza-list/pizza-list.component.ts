@@ -175,11 +175,13 @@ export class PizzaListComponent implements OnInit {
    * @param size size the modal : lg or sm
    * @param pizza: Pizza
    */
-  public open(content, size: string = 'lg', pizza: Pizza) {
+  public open(content, size: string = 'lg', pizza: Pizza, fromDelete: boolean = false) {
     // console.log(this.imgSource.nativeElement);
     if (pizza) {
       this.images = new Array();
-      this.getImageFromService(pizza);
+      if (!fromDelete) {
+        this.getImageFromService(pizza);
+      }
     }
 
     this.modalRef = this.modalService.open(content, {
@@ -239,8 +241,14 @@ export class PizzaListComponent implements OnInit {
 
     this.pizzaService.deletePizza(pizzaId).subscribe(
       data => {
+        let mess =  'Pizza supprimé !';
         // console.log(data);
-        this.toastr.success('Pizza supprimé !', 'Congrat');
+
+        // retour api avec {message, Pizza} (pour savoir si les images n'exister pas dans ./uploads/)
+        if (data.message.indexOf('le(s)') !== -1) {
+          mess = 'Pizza supprimé ! Mais image(s) non supprimée(s) car manquante(s)', 'Congrat';
+        }
+        this.toastr.success(mess, 'Congrat');
         // rechargement des données (donc sans l'element supprimé)
         this.loadData();
       },

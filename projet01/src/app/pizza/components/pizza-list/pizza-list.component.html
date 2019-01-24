@@ -161,7 +161,7 @@
                   <button type="button" class="btn btn-link btn-block text-left text-color px-2 py-1" (click)="deactivate(pizza)">Désactiver</button>
                 </li>
                 <li class="dropdown-item p-0">
-                  <button type="button" class="btn btn-link btn-block text-left text-danger px-2 py-1" (click)="open(deleteModal, 'lg', pizza)">Supprimer</button>
+                  <button type="button" class="btn btn-link btn-block text-left text-danger px-2 py-1" (click)="open(deleteModal, 'lg', pizza, true)">Supprimer</button>
                 </li>
               </ul>
             </div>
@@ -226,6 +226,11 @@
     </div>
     <div class="modal-body">
       <div>Êtes vous certain de vouloir supprimer cette pizza ?</div>
+        <div>Vous allez aussi supprimer :
+          <span *ngFor="let image of modalPizza.img">
+            - {{image}}
+          </span>
+      </div>
     </div>
     <div class="modal-footer">
       <button type="button" class="btn btn-danger" (click)="delete(modalPizza._id)">Supprimer</button>
