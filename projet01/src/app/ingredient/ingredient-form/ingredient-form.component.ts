@@ -24,6 +24,7 @@ export class IngredientFormComponent implements OnInit {
   public editMode: boolean;
 
   public filesToUpload: Array<File>;
+  public imgError: boolean;
   
   constructor(
     private formBuilder: FormBuilder,
@@ -34,6 +35,7 @@ export class IngredientFormComponent implements OnInit {
     this.submitted = false;
     this.ingredient = new Ingredient();
     this.editMode = false;
+    this.imgError = false;
   }
 
   ngOnInit() {
@@ -50,7 +52,7 @@ export class IngredientFormComponent implements OnInit {
     if (this.editMode) {
       const _id = this.router.url.split('/')[3];
       // console.log(_id);
-      
+
       this.ingredientService.getIngredient(_id).subscribe(res => {
         this.ingredient = res;
         const weight = this.ingredient.weight.replace(',', '.');
@@ -72,12 +74,16 @@ export class IngredientFormComponent implements OnInit {
   onSubmit() {
       this.submitted = true;
 
+      console.log(this.ingredient);
+
       // stop here if form is invalid
       if (this.ingredientForm.invalid) {
         this.toastr.error('Le formulaire n\' a pas été rempli correctement', 'error');
+        if (!this.ingredientForm.value.img) {
+          this.imgError = true;
+        }
         return;
       } else {
-        // console.log(this.ingredient);
         // console.log(this.ingredientForm);
         this.ingredient.name = this.ingredientForm.value.name;
         this.ingredient.img = this.ingredientForm.value.img;
@@ -87,13 +93,17 @@ export class IngredientFormComponent implements OnInit {
         this.ingredient.deleted = false;
         this.ingredient.createdAt = '';
 
+        // console.log(this.ingredient);
+
         // creation de notre formData pour le uploadFIle
         const formData = new FormData();
 
-        // pour chaque images
-        for (let img of this.filesToUpload) {
-          // on créé un champs dans notre formulaire avec son nom et le fichier
-          formData.append(img.name, img, img.name);
+        if (this.filesToUpload) {
+          // pour chaque images
+          for (let img of this.filesToUpload) {
+            // on créé un champs dans notre formulaire avec son nom et le fichier
+            formData.append(img.name, img, img.name);
+          }
         }
 
         // puis on ajoute au champs content l'objet de notre ingredient

@@ -69,7 +69,6 @@ export class AppModule { }
 // TODO :
 // Pizza and Ingredient Details
 // full commentary code
-// Ingredient Form for edit case !
 // error message on form
 // Add toastr un peu de partout ;)
 // TODO (secondary)

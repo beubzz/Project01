@@ -22,7 +22,7 @@ const mongoose = require('mongoose'),
         weight: { type: String },
         price: { type: String, required: true },
         created_at: { type: Date, default: Date.now },
-        img: { type: String },
+        img: { type: Array },
         deleted: { type: Boolean, default: false }
     });
 

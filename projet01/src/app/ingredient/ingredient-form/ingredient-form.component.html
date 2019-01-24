@@ -14,33 +14,26 @@
                         </div>
                     </div>
 
-                    <app-upload-files (addedFiles)="getAddedFiles($event)"></app-upload-files>
-
-
-                    <div *ngIf="ingredientForm.value.img.length > 0 && ingredientForm.controls.img.valid">
-                        <div *ngFor="let img of ingredientForm.value.img">
-                            <span>
-                                {{img}}
-                            </span>
-                        </div>
-                    </div>
-
-                    <!-- 
                     <div class="form-group">
-                        <label>Image</label>
-                        <input type="text" formControlName="img"
-                        class="form-control" [ngClass]="{ 'is-invalid': submitted && f.img.errors }" />
-                        <div *ngIf="submitted && f.img.errors" class="invalid-feedback">
-                            <div *ngIf="f.img.errors.required">First Name is required</div>
+                        <app-upload-files (addedFiles)="getAddedFiles($event)"></app-upload-files>
+
+                        <div *ngIf="ingredientForm.value.img.length > 0 && ingredientForm.controls.img.valid">
+                            <div *ngFor="let img of ingredientForm.value.img">
+                                <span>
+                                    {{img}}
+                                </span>
+                            </div>
+                        </div>
+                        <div *ngIf="submitted && imgError" class="invalid-feedback" style="display: block">
+                            <div>Image(s) is required</div>
                         </div>
                     </div>
-                    -->
                     <div class="form-group">
                         <label>Description</label>
                         <input type="text" formControlName="description"
                         class="form-control" [ngClass]="{ 'is-invalid': submitted && f.description.errors }" />
                         <div *ngIf="submitted && f.description.errors" class="invalid-feedback">
-                            <div *ngIf="f.description.errors.required">First Name is required</div>
+                            <div *ngIf="f.description.errors.required">Description is required</div>
                         </div>
                     </div>
                     <div class="form-group">
@@ -48,7 +41,7 @@
                         <input type="number" formControlName="weight"
                         class="form-control" [ngClass]="{ 'is-invalid': submitted && f.weight.errors }" />
                         <div *ngIf="submitted && f.weight.errors" class="invalid-feedback">
-                            <div *ngIf="f.weight.errors.required">First Name is required</div>
+                            <div *ngIf="f.weight.errors.required">Poids is required</div>
                         </div>
                     </div>
                     <div class="form-group">
@@ -56,7 +49,7 @@
                         <input type="number" formControlName="price"
                         class="form-control" [ngClass]="{ 'is-invalid': submitted && f.price.errors }" />
                         <div *ngIf="submitted && f.price.errors" class="invalid-feedback">
-                            <div *ngIf="f.price.errors.required">First Name is required</div>
+                            <div *ngIf="f.price.errors.required">Price is required</div>
                         </div>
                     </div>
                     <div class="form-group">

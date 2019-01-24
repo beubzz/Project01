@@ -27,6 +27,7 @@ export class PizzaFormComponent implements OnInit {
   public ingredientArray: Array<Ingredient>;
   public editMode: boolean;
   public filesToUpload: Array<File>;
+  public imgError: boolean;
   
   constructor(
     private formBuilder: FormBuilder,
@@ -41,6 +42,7 @@ export class PizzaFormComponent implements OnInit {
     this.ingredientsInput$ = new Subject<string>();
     this.ingredientArray = new Array();
     this.editMode = false;
+    this.imgError = false;
   }
 
   ngOnInit() {
@@ -148,6 +150,9 @@ export class PizzaFormComponent implements OnInit {
     if (this.pizzaForm.invalid) {
       // Si invalide on previens l'utilisateur avec un toast
       this.toastr.error('Le formulaire n\' a pas été rempli correctement', 'error');
+      if (!this.pizzaForm.value.img) {
+        this.imgError = true;
+      }
       return;
     } else {
       // si le formulaire est valide : on set notre objet au valeur du form
@@ -163,10 +168,12 @@ export class PizzaFormComponent implements OnInit {
       // creation de notre formData pour le uploadFIle
       const formData = new FormData();
 
-      // pour chaque images
-      for (let img of this.filesToUpload) {
-        // on créé un champs dans notre formulaire avec son nom et le fichier
-        formData.append(img.name, img, img.name);
+      if (this.filesToUpload) {
+        // pour chaque images
+        for (let img of this.filesToUpload) {
+          // on créé un champs dans notre formulaire avec son nom et le fichier
+          formData.append(img.name, img, img.name);
+        }
       }
 
       // puis on ajoute au champs content l'objet de notre pizza

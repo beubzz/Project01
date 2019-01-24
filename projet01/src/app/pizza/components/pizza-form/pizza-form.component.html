@@ -27,8 +27,9 @@
                     </div> 
 
                 -->
-                <app-upload-files (addedFiles)="getAddedFiles($event)"></app-upload-files>
 
+                <div class="form-group">
+                    <app-upload-files (addedFiles)="getAddedFiles($event)"></app-upload-files>
 
                     <div *ngIf="pizzaForm.value.img.length > 0 && pizzaForm.controls.img.valid">
                         <div *ngFor="let img of pizzaForm.value.img">
@@ -37,6 +38,11 @@
                             </span>
                         </div>
                     </div>
+
+                    <div *ngIf="submitted && imgError" class="invalid-feedback" style="display: block">
+                        <div>Image(s) is required</div>
+                    </div>
+                </div>
 
                     <!-- <input #file type="file" class="form-control" id="file" name="filesUploaded" multiple (change)="addFile($event)"> -->
                     <!--  (change)="getUploadedFile($event)">  -->
@@ -65,7 +71,7 @@
                         <input type="text" formControlName="description"
                         class="form-control" [ngClass]="{ 'is-invalid': submitted && f.description.errors }" />
                         <div *ngIf="submitted && f.description.errors" class="invalid-feedback">
-                            <div *ngIf="f.description.errors.required">First Name is required</div>
+                            <div *ngIf="f.description.errors.required">Description is required</div>
                         </div>
                     </div>
                     <div class="form-group">
@@ -73,7 +79,7 @@
                         <input type="text" formControlName="lat"
                         class="form-control" [ngClass]="{ 'is-invalid': submitted && f.lat.errors }" />
                         <div *ngIf="submitted && f.lat.errors" class="invalid-feedback">
-                            <div *ngIf="f.lat.errors.required">First Name is required</div>
+                            <div *ngIf="f.lat.errors.required">Latitude is required</div>
                         </div>
                     </div>
                     <div class="form-group">
@@ -81,7 +87,7 @@
                         <input type="text" formControlName="long"
                         class="form-control" [ngClass]="{ 'is-invalid': submitted && f.long.errors }" />
                         <div *ngIf="submitted && f.long.errors" class="invalid-feedback">
-                            <div *ngIf="f.long.errors.required">First Name is required</div>
+                            <div *ngIf="f.long.errors.required">Longitude is required</div>
                         </div>
                     </div>
                     <div class="form-group">
@@ -98,6 +104,9 @@
                     
                         </ng-select>
                         <app-add-ingredient-modal></app-add-ingredient-modal>
+                        <div *ngIf="submitted && f.ingredients.errors" class="invalid-feedback" style="display: block">
+                            <div *ngIf="f.ingredients.errors.required">Ingredient is required</div>
+                        </div>
                     </div>
                     <div class="form-group">
                         <button *ngIf="!editMode" [disabled]="loading" class="btn btn-primary">Ajouter</button>
