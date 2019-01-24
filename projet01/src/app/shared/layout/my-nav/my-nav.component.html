@@ -34,9 +34,9 @@
     <!-- <div class="header-page-perso" style="height: 100px; width: 100%; background-color: aqua; z-index: 1000; position: fixed;">
       blablabalbalabalab
     </div> -->
-    <div class="bg-white border-bottom px-3 py-3" style="position: sticky; position: -webkit-sticky; top: 64px; z-index: 10000">
+    <div class="bg-white border-bottom" style="position: sticky; position: -webkit-sticky; top: 64px; z-index: 10000; padding: 10px 15px">
       <nav aria-label="breadcrumb">
-          <ol class="breadcrumb align-items-center">
+          <ol class="breadcrumb align-items-center" style="margin-bottom: 0; padding: 0; background-color: white;">
               <li class="breadcrumb-item font-xs"><a href="#">Accueil</a></li>
               <li *ngIf="parent; then multiParent" class="breadcrumb-item active font-xs" [routerLink]="[parentLink]">{{parentTitle}}</li>
               <li aria-current="page" class="breadcrumb-item active navbar-heading">{{heading}}</li>
