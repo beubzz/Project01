@@ -1,6 +1,6 @@
 <div style="padding: 40px" class="card">
   <div class="actions-on-table d-flex">
-    <button class="btn btn-actions-on-table btn-primary ml-auto" type="button" [routerLink]="['add']"
+    <button *ngIf="!checkedPizza || checkedPizza.length === 0" class="btn btn-actions-on-table btn-primary ml-auto" type="button" [routerLink]="['add']"
       routerLinkActive="router-link-active">
       Ajouter
     </button>

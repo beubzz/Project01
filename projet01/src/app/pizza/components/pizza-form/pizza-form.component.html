@@ -93,20 +93,29 @@
                     <div class="form-group">
 
                         <label for="name">Ingredients <span class="text-danger">*</span></label>
-                        <ng-select [items]="(ingredients$ | async)" [multiple]="true" [hideSelected]="true" bindLabel="name" typeToSearchText="Entrez du texte"
-                        placeholder="Sélectionnez un ingredients" [loading]="isLoading" [typeahead]="ingredientsInput$" notFoundText="Aucun ingredients trouvé ..."
-                        formControlName="ingredients">
-                    
-                            <ng-template ng-option-tmp let-item="item">
-                                <div><span [ngOptionHighlight]="search">{{item.name}}</span></div>
-                                <small><b>Id : </b> {{item._id}}</small>
-                            </ng-template>
-                    
-                        </ng-select>
-                        <app-add-ingredient-modal></app-add-ingredient-modal>
-                        <div *ngIf="submitted && f.ingredients.errors" class="invalid-feedback" style="display: block">
-                            <div *ngIf="f.ingredients.errors.required">Ingredient is required</div>
+                        <div class="row">
+                            
+                            <div class="col-md-9">
+                                <ng-select [items]="(ingredients$ | async)" [multiple]="true" [hideSelected]="true" bindLabel="name" typeToSearchText="Entrez du texte"
+                                placeholder="Sélectionnez un ingredients" [loading]="isLoading" [typeahead]="ingredientsInput$" notFoundText="Aucun ingredients trouvé ..."
+                                formControlName="ingredients" style="line-height: 1.8em;">
+                            
+                                    <ng-template ng-option-tmp let-item="item">
+                                        <div><span [ngOptionHighlight]="search">{{item.name}}</span></div>
+                                        <small><b>Id : </b> {{item._id}}</small>
+                                    </ng-template>
+                            
+                                </ng-select>
+                            </div>
+                            <div class="col-md-3">
+                                <app-add-ingredient-modal></app-add-ingredient-modal>
+
+                                <div *ngIf="submitted && f.ingredients.errors" class="invalid-feedback" style="display: block">
+                                    <div *ngIf="f.ingredients.errors.required">Ingredient is required</div>
+                                </div>
+                            </div>
                         </div>
+
                     </div>
                     <div class="form-group">
                         <button *ngIf="!editMode" [disabled]="loading" class="btn btn-primary">Ajouter</button>
